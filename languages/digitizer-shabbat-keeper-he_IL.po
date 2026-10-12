@@ -1,0 +1,381 @@
+# Hebrew translation of Digitizer Shabbat Keeper.
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Digitizer Shabbat Keeper 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/digitizer-shabbat-keeper\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: digitizer-shabbat-keeper\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:29 includes/class-digitizer-shabbat-keeper-admin.php:30 includes/class-digitizer-shabbat-keeper-admin.php:153
+msgid "Shabbat Keeper"
+msgstr "שומר שבת"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:44
+msgid "Settings"
+msgstr "הגדרות"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:54
+msgid "Settings saved."
+msgstr "ההגדרות נשמרו."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:82
+msgid "the whole site closes"
+msgstr "האתר כולו נסגר"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:83
+msgid "purchases and forms are refused"
+msgstr "רכישות וטפסים נדחים"
+
+#. translators: 1: city name, 2: what happens during a closure.
+#: includes/class-digitizer-shabbat-keeper-admin.php:86
+msgid "Shabbat Keeper is active with the times of %1$s: from candle lighting to Havdalah, %2$s."
+msgstr "שומר שבת פעיל לפי הזמנים של %1$s: מהדלקת נרות ועד הבדלה, %2$s."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:90
+msgid "Choose your city and mode"
+msgstr "בחירת עיר ומצב"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:95
+msgid "You are not allowed to do that."
+msgstr "אין לך הרשאה לבצע פעולה זו."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:112
+msgid "Shabbat"
+msgstr "שבת"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:113
+msgid "Rosh Hashana I"
+msgstr "ראש השנה א׳"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:114
+msgid "Rosh Hashana II"
+msgstr "ראש השנה ב׳"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:115
+msgid "Yom Kippur"
+msgstr "יום כיפור"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:116
+msgid "Sukkot"
+msgstr "סוכות"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:117
+msgid "Shmini Atzeret"
+msgstr "שמיני עצרת"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:118
+msgid "Pesach"
+msgstr "פסח"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:119
+msgid "Seventh day of Pesach"
+msgstr "שביעי של פסח"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:120
+msgid "Shavuot"
+msgstr "שבועות"
+
+#. translators: PHP date format for a closure start or end: weekday, day.month, time.
+#: includes/class-digitizer-shabbat-keeper-admin.php:150
+msgid "D j.n H:i"
+msgstr "D j.n H:i"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:156
+msgid "Status"
+msgstr "סטטוס"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:158
+msgid "Now: closed"
+msgstr "עכשיו: סגור"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:158
+msgid "Now: open"
+msgstr "עכשיו: פתוח"
+
+#. translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted".
+#: includes/class-digitizer-shabbat-keeper-admin.php:161
+msgid "Reopens %s"
+msgstr "ייפתח מחדש %s"
+
+#. translators: %s: weekday, date and time of the next closure.
+#: includes/class-digitizer-shabbat-keeper-admin.php:164
+msgid "Next closing: %s"
+msgstr "הסגירה הבאה: %s"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:168
+msgid "Preview the closed site"
+msgstr "תצוגה מקדימה של האתר הסגור"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:169
+msgid "Upcoming closures"
+msgstr "סגירות קרובות"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:172
+msgid "From"
+msgstr "מ־"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:173
+msgid "Until"
+msgstr "עד"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:174
+msgid "Reason"
+msgstr "סיבה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:186
+msgid "Nothing leaves the site: the times are computed here from the city you pick."
+msgstr "שום דבר לא יוצא מהאתר: הזמנים מחושבים כאן לפי העיר שבחרתם."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:194
+msgid "Mode"
+msgstr "מצב"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:195
+msgid "Closed - every visitor sees a \"closed for Shabbat\" page"
+msgstr "סגור - כל מבקר רואה עמוד \"סגור לשבת\""
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:196
+msgid "Open to read, closed for business - pages stay readable; purchases and forms are refused"
+msgstr "פתוח לקריאה, סגור לעסקים - העמודים נשארים קריאים; רכישות וטפסים נדחים"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:200
+msgid "Location"
+msgstr "מיקום"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:203
+msgid "City"
+msgstr "עיר"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:209 includes/class-digitizer-shabbat-keeper-admin.php:214
+msgid "Custom"
+msgstr "מותאם"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:216
+msgid "Latitude"
+msgstr "קו רוחב"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:217
+msgid "Longitude"
+msgstr "קו אורך"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:218
+msgid "Candle lighting, minutes before sunset"
+msgstr "הדלקת נרות, דקות לפני השקיעה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:222
+msgid "Havdalah"
+msgstr "הבדלה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:224
+msgid "42 minutes after sunset"
+msgstr "42 דקות אחרי השקיעה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:225
+msgid "72 minutes after sunset (Rabbeinu Tam)"
+msgstr "72 דקות אחרי השקיעה (רבנו תם)"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:232
+msgid "Closed page"
+msgstr "עמוד סגור"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:235
+msgid "Title"
+msgstr "כותרת"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:239
+msgid "Message"
+msgstr "הודעה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:246
+msgid "Show the reopening time"
+msgstr "הצגת שעת הפתיחה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:250
+msgid "Credit"
+msgstr "קרדיט"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:252
+msgid "Show \"Shabbat Keeper by Digitizer\" under the closed message"
+msgstr "הצגת \"שומר שבת מבית Digitizer\" מתחת להודעת הסגירה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:253
+msgid "Off unless you switch it on. It appears on the closed page only."
+msgstr "כבוי עד שתפעילו. מופיע בעמוד הסגור בלבד."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:260
+msgid "Business mode"
+msgstr "מצב עסקים"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:262
+msgid "Refuse WooCommerce purchases"
+msgstr "חסימת רכישות בווקומרס"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:263
+msgid "Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)"
+msgstr "חסימת שליחת טפסים (אלמנטור, Contact Form 7, WPForms, Gravity Forms)"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:264
+msgid "Hide phone and WhatsApp links"
+msgstr "הסתרת קישורי טלפון ווואטסאפ"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:265
+msgid "Show a banner at the top of every page"
+msgstr "הצגת באנר בראש כל עמוד"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:267
+msgid "Banner text"
+msgstr "טקסט הבאנר"
+
+#. translators: %s is shown to the reader as it is: it is the placeholder they type into the banner text.
+#: includes/class-digitizer-shabbat-keeper-admin.php:271
+msgid "%s is replaced by the reopening time."
+msgstr "%s מוחלף בשעת הפתיחה."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:278
+msgid "Override"
+msgstr "עקיפה"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:279
+msgid "Automatic (by the calendar)"
+msgstr "אוטומטי (לפי הלוח)"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:280
+msgid "Force open"
+msgstr "פתוח בכוח"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:281
+msgid "Force closed"
+msgstr "סגור בכוח"
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:282
+msgid "A forced state ignores the calendar until you switch back to automatic."
+msgstr "מצב כפוי מתעלם מהלוח עד שתחזרו לאוטומטי."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:285
+msgid "Save Settings"
+msgstr "שמירת הגדרות"
+
+#. translators: %s: the name Digitizer, linked to its website.
+#: includes/class-digitizer-shabbat-keeper-admin.php:293
+msgid "Shabbat Keeper is built by %s - WordPress sites and maintenance for Israeli businesses."
+msgstr "שומר שבת נבנה על ידי %s - אתרי וורדפרס ותחזוקה לעסקים בישראל."
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:15
+msgid "Jerusalem"
+msgstr "ירושלים"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:16
+msgid "Tel Aviv"
+msgstr "תל אביב"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:17
+msgid "Haifa"
+msgstr "חיפה"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:18
+msgid "Beer Sheva"
+msgstr "באר שבע"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:19
+msgid "Eilat"
+msgstr "אילת"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:20
+msgid "Netanya"
+msgstr "נתניה"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:21
+msgid "Petah Tikva"
+msgstr "פתח תקווה"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:22
+msgid "Ashdod"
+msgstr "אשדוד"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:23
+msgid "Bnei Brak"
+msgstr "בני ברק"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:24
+msgid "Modiin"
+msgstr "מודיעין"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:25
+msgid "Safed"
+msgstr "צפת"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:26
+msgid "Tiberias"
+msgstr "טבריה"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:27
+msgid "Rehovot"
+msgstr "רחובות"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:28
+msgid "Hadera"
+msgstr "חדרה"
+
+#: includes/class-digitizer-shabbat-keeper-cities.php:29
+msgid "Kfar Saba"
+msgstr "כפר סבא"
+
+#: includes/class-digitizer-shabbat-keeper-enforce.php:205
+msgid "when the closure is lifted"
+msgstr "כשהסגירה תוסר"
+
+#: includes/class-digitizer-shabbat-keeper-enforce.php:209
+msgid "after Havdalah"
+msgstr "לאחר ההבדלה"
+
+#. translators: PHP date format for the reopening moment: weekday name and time.
+#: includes/class-digitizer-shabbat-keeper-enforce.php:212
+msgid "l H:i"
+msgstr "l H:i"
+
+#. translators: %s: weekday name and time, e.g. "Saturday 19:32".
+#: includes/class-digitizer-shabbat-keeper-enforce.php:214
+msgid "on %s"
+msgstr "ב%s"
+
+#. translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted".
+#: includes/class-digitizer-shabbat-keeper-enforce.php:219
+msgid "The site reopens %s."
+msgstr "האתר ייפתח מחדש %s."
+
+#: includes/class-digitizer-shabbat-keeper-settings.php:78
+msgid "The site is closed for Shabbat"
+msgstr "האתר סגור לשבת"
+
+#: includes/class-digitizer-shabbat-keeper-settings.php:82
+msgid "We observe Shabbat and Jewish holidays and close the site for them."
+msgstr "אנחנו שומרים שבת וחגי ישראל וסוגרים את האתר לכבודם."
+
+#. translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted".
+#: includes/class-digitizer-shabbat-keeper-settings.php:85
+msgid "The site is closed for Shabbat. Orders and forms reopen %s."
+msgstr "האתר סגור לשבת. הזמנות וטפסים ייפתחו מחדש %s."
+
+#: includes/class-digitizer-shabbat-keeper-settings.php:136
+msgid "Custom location"
+msgstr "מיקום מותאם"
+
+#. translators: %s: the name Digitizer, linked to its website.
+#: views/closed-screen.php:42
+msgid "Shabbat Keeper by %s"
+msgstr "שומר שבת מבית %s"
+
+#. Plugin Name of the plugin
+#: digitizer-shabbat-keeper.php
+msgid "Digitizer Shabbat Keeper"
+msgstr "Digitizer Shabbat Keeper"
+
+#. Description of the plugin
+#: digitizer-shabbat-keeper.php
+msgid "Closes your site, or only its shop and forms, from candle lighting to Havdalah every Shabbat and Jewish holiday. Times are computed on your server for the Israeli city you pick - nothing is sent anywhere."
+msgstr "סוגר את האתר, או רק את החנות והטפסים, מהדלקת נרות ועד הבדלה בכל שבת וחג. הזמנים מחושבים בשרת שלכם לפי העיר שתבחרו בישראל - שום דבר לא נשלח לשום מקום."

@@ -1,0 +1,87 @@
+name: CI
+
+# What stands between a merge and the WordPress.org directory:
+#
+#   tests        - the stub-harness suite, on the PHP floor the plugin declares
+#                  and on current versions.
+#   catalogs     - the translation files match the source, and compile.
+#   plugin-check - the same tool WordPress.org runs against a submission, run
+#                  on exactly the files bin/build-zip.sh ships.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["7.2", "7.4", "8.1", "8.3"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Lint
+        run: |
+          for f in digitizer-shabbat-keeper.php uninstall.php includes/*.php views/*.php languages/*.php tests/*.php bin/*.php; do
+            php -l "$f" > /dev/null || exit 1
+          done
+
+      - name: Tests
+        run: |
+          for f in tests/*-test.php; do
+            php "$f" || exit 1
+          done
+
+  catalogs:
+    name: Translation catalogs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Install gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      # Fails when a string has no Hebrew; the diff fails when the committed
+      # catalogs are not what the source produces.
+      - name: Rebuild and compare
+        run: |
+          php bin/build-i18n.php
+          git diff --exit-code -- languages/*.pot languages/*.po languages/*.l10n.php
+
+      - name: Compile
+        run: msgfmt --check -o /dev/null languages/digitizer-shabbat-keeper-he_IL.po
+
+  plugin-check:
+    name: Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the directory that ships
+        run: |
+          bash bin/build-zip.sh
+          mkdir -p build
+          unzip -q dist/digitizer-shabbat-keeper.zip -d build
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: ./build/digitizer-shabbat-keeper
