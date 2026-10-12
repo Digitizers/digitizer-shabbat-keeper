@@ -359,8 +359,10 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		if ( function_exists( 'sg_cachepress_purge_cache' ) ) {
 			sg_cachepress_purge_cache(); // SiteGround Optimizer.
 		}
-		do_action( 'litespeed_purge_all' ); // LiteSpeed Cache.
-		do_action( 'breeze_clear_all_cache' ); // Breeze (Cloudways).
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- LiteSpeed Cache's own purge hook.
+		do_action( 'litespeed_purge_all' );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Breeze's (Cloudways) own purge hook.
+		do_action( 'breeze_clear_all_cache' );
 		do_action( 'digitizer_shabbat_keeper_purge' );
 	}
 }

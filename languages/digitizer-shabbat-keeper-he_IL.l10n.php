@@ -54,6 +54,7 @@ return array (
     'Show "Shabbat Keeper by Digitizer" under the closed message' => 'הצגת "שומר שבת מבית Digitizer" מתחת להודעת הסגירה',
     'Off unless you switch it on. It appears on the closed page only.' => 'כבוי עד שתפעילו. מופיע בעמוד הסגור בלבד.',
     'Business mode' => 'מצב עסקים',
+    'These switches apply to business mode. In closed mode, purchases and forms are always refused.' => 'המתגים האלה חלים על מצב עסקים. במצב סגור, רכישות וטפסים נחסמים תמיד.',
     'Refuse WooCommerce purchases' => 'חסימת רכישות בווקומרס',
     'Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)' => 'חסימת שליחת טפסים (אלמנטור, Contact Form 7, WPForms, Gravity Forms)',
     'Hide phone and WhatsApp links' => 'הסתרת קישורי טלפון ווואטסאפ',

@@ -258,6 +258,7 @@ final class Digitizer_Shabbat_Keeper_Admin {
 
 				<div class="digitizer-sk-section">
 					<h2 class="title"><?php esc_html_e( 'Business mode', 'digitizer-shabbat-keeper' ); ?></h2>
+					<p class="description"><?php esc_html_e( 'These switches apply to business mode. In closed mode, purchases and forms are always refused.', 'digitizer-shabbat-keeper' ); ?></p>
 					<table class="form-table"><tbody>
 						<tr><th scope="row"><?php esc_html_e( 'Refuse WooCommerce purchases', 'digitizer-shabbat-keeper' ); ?></th><td><?php $this->switch_field( 'block_woo', $o['block_woo'] ); ?></td></tr>
 						<tr><th scope="row"><?php esc_html_e( 'Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)', 'digitizer-shabbat-keeper' ); ?></th><td><?php $this->switch_field( 'block_forms', $o['block_forms'] ); ?></td></tr>

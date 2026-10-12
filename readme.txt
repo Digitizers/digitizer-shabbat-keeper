@@ -32,6 +32,8 @@ Digitizer Shabbat Keeper closes a WordPress site from candle lighting to Havdala
 
 Every refusal happens on the server. Hiding a button is a courtesy; the refusal is what makes it true.
 
+You can switch the WooCommerce and the form refusals off separately in business mode. Closed mode always refuses both: a checkout or a form that was already open at candle lighting cannot be sent while the site says it is closed.
+
 = The times =
 
 * Candle lighting follows the custom of each city: 40 minutes before sunset in Jerusalem, 30 in Haifa, 22 in Beer Sheva, 18 elsewhere. Fifteen cities are built in, and you can enter coordinates for any other place in Israel.

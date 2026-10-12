@@ -211,57 +211,61 @@ msgstr "כבוי עד שתפעילו. מופיע בעמוד הסגור בלבד.
 msgid "Business mode"
 msgstr "מצב עסקים"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:262
+#: includes/class-digitizer-shabbat-keeper-admin.php:261
+msgid "These switches apply to business mode. In closed mode, purchases and forms are always refused."
+msgstr "המתגים האלה חלים על מצב עסקים. במצב סגור, רכישות וטפסים נחסמים תמיד."
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:263
 msgid "Refuse WooCommerce purchases"
 msgstr "חסימת רכישות בווקומרס"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:263
+#: includes/class-digitizer-shabbat-keeper-admin.php:264
 msgid "Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)"
 msgstr "חסימת שליחת טפסים (אלמנטור, Contact Form 7, WPForms, Gravity Forms)"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:264
+#: includes/class-digitizer-shabbat-keeper-admin.php:265
 msgid "Hide phone and WhatsApp links"
 msgstr "הסתרת קישורי טלפון ווואטסאפ"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:265
+#: includes/class-digitizer-shabbat-keeper-admin.php:266
 msgid "Show a banner at the top of every page"
 msgstr "הצגת באנר בראש כל עמוד"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:267
+#: includes/class-digitizer-shabbat-keeper-admin.php:268
 msgid "Banner text"
 msgstr "טקסט הבאנר"
 
 #. translators: %s is shown to the reader as it is: it is the placeholder they type into the banner text.
-#: includes/class-digitizer-shabbat-keeper-admin.php:271
+#: includes/class-digitizer-shabbat-keeper-admin.php:272
 msgid "%s is replaced by the reopening time."
 msgstr "%s מוחלף בשעת הפתיחה."
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:278
+#: includes/class-digitizer-shabbat-keeper-admin.php:279
 msgid "Override"
 msgstr "עקיפה"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:279
+#: includes/class-digitizer-shabbat-keeper-admin.php:280
 msgid "Automatic (by the calendar)"
 msgstr "אוטומטי (לפי הלוח)"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:280
+#: includes/class-digitizer-shabbat-keeper-admin.php:281
 msgid "Force open"
 msgstr "פתוח בכוח"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:281
+#: includes/class-digitizer-shabbat-keeper-admin.php:282
 msgid "Force closed"
 msgstr "סגור בכוח"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:282
+#: includes/class-digitizer-shabbat-keeper-admin.php:283
 msgid "A forced state ignores the calendar until you switch back to automatic."
 msgstr "מצב כפוי מתעלם מהלוח עד שתחזרו לאוטומטי."
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:285
+#: includes/class-digitizer-shabbat-keeper-admin.php:286
 msgid "Save Settings"
 msgstr "שמירת הגדרות"
 
 #. translators: %s: the name Digitizer, linked to its website.
-#: includes/class-digitizer-shabbat-keeper-admin.php:293
+#: includes/class-digitizer-shabbat-keeper-admin.php:294
 msgid "Shabbat Keeper is built by %s - WordPress sites and maintenance for Israeli businesses."
 msgstr "שומר שבת נבנה על ידי %s - אתרי וורדפרס ותחזוקה לעסקים בישראל."
 

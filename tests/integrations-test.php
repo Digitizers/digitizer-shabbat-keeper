@@ -77,9 +77,19 @@ dsk_test_eq( count( $cf7->invalid ), 1, 'CF7 submission invalidated' );
 do_action_stub( 'wpforms_process_before', array(), array( 'id' => 9 ) );
 dsk_test_ok( isset( $GLOBALS['dsk_stub_wpforms']->process->errors[9]['header'] ), 'WPForms submission refused' );
 
-$ajax = new class() { public $errors = array(); public function add_error_message( $m ) { $this->errors[] = $m; } };
+/* Elementor Pro's Ajax_Handler keeps two lists, and Form_Record::validate() reads only $errors. */
+$ajax = new class() {
+	public $errors = array();
+	public $messages = array();
+	public function add_error( $field, $m = '' ) { $this->errors[ $field ] = $m; return $this; }
+	public function add_error_message( $m ) { $this->messages[] = $m; return $this; }
+};
 do_action_stub( 'elementor_pro/forms/validation', null, $ajax );
-dsk_test_eq( count( $ajax->errors ), 1, 'Elementor submission refused' );
+dsk_test_eq( count( $ajax->errors ), 1, 'Elementor submission stopped by a validation error, not only a message' );
+dsk_test_eq( count( $ajax->messages ), 1, 'Elementor visitor is told why' );
+$legacy = new class() { public $messages = array(); public function add_error_message( $m ) { $this->messages[] = $m; } };
+do_action_stub( 'elementor_pro/forms/validation', null, $legacy );
+dsk_test_eq( count( $legacy->messages ), 0, 'a handler that cannot be stopped is left alone' );
 dsk_test_eq( apply_filters( 'comments_open', true, 5 ), false, 'comment forms closed while closed' );
 $died = null;
 try { do_action_stub( 'pre_comment_on_post', 5 ); } catch ( Exception $e ) { $died = $e->getMessage(); }
@@ -155,11 +165,17 @@ dsk_test_ok( ! dsk_stub_has_filter( 'wpcf7_validate' ), 'forms not hooked when s
 dsk_test_ok( ! dsk_stub_has_filter( 'pre_comment_on_post' ), 'comments not hooked in business mode with forms switched off' );
 $GLOBALS['dsk_stub_filters'] = array();
 add_filter( 'digitizer_shabbat_keeper_now', function () use ( &$clock ) { return $clock; } );
-Digitizer_Shabbat_Keeper_Settings::save( array( 'mode' => 'closed', 'block_forms' => '0' ) );
+Digitizer_Shabbat_Keeper_Settings::save( array( 'mode' => 'closed', 'block_woo' => '0', 'block_forms' => '0' ) );
 Digitizer_Shabbat_Keeper_Enforce::reset();
 Digitizer_Shabbat_Keeper_Integrations::hook_plugins();
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'block_woo' ), '0', 'both business switches really are off' );
 dsk_test_ok( dsk_stub_has_filter( 'pre_comment_on_post' ), 'closed mode guards comments even with forms switched off' );
 dsk_test_ok( dsk_stub_has_filter( 'comments_open' ), 'closed mode closes comment forms even with forms switched off' );
+dsk_test_ok( dsk_stub_has_filter( 'woocommerce_store_api_cart_errors' ), 'closed mode refuses the Store API even with the WooCommerce switch off' );
+dsk_test_ok( dsk_stub_has_filter( 'woocommerce_checkout_process' ), 'closed mode refuses checkout even with the WooCommerce switch off' );
+dsk_test_ok( dsk_stub_has_filter( 'woocommerce_before_pay_action' ), 'closed mode refuses order payment even with the WooCommerce switch off' );
+dsk_test_ok( dsk_stub_has_filter( 'wpcf7_validate' ), 'closed mode refuses form posts even with the forms switch off' );
+dsk_test_ok( dsk_stub_has_filter( 'elementor_pro/forms/validation' ), 'closed mode refuses Elementor posts even with the forms switch off' );
 
 /* Actions in the harness share the filter registry; run one by hand. */
 function do_action_stub( $tag ) {
