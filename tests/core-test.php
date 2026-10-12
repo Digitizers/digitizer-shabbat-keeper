@@ -83,6 +83,44 @@ dsk_test_ok( ! isset( $GLOBALS['dsk_stub_cron'][ Digitizer_Shabbat_Keeper_Enforc
 dsk_test_eq( $GLOBALS['dsk_stub_purges'], 1, 'and purges pages cached with a banner or a closed screen' );
 dsk_test_ok( is_array( get_option( $option ) ), 'settings survive deactivation' );
 
+/* ---- a network sub-site that never ran the activation hook still gets the import ---- */
+$GLOBALS['dsk_stub_options'] = array( Digitizer_Shabbat_Keeper_Core::DPT_OPTION => array( 'mode' => 'closed', 'city' => 'haifa' ) );
+$GLOBALS['dsk_stub_filters'] = array();
+Digitizer_Shabbat_Keeper_Core::boot();
+$o = get_option( $option );
+dsk_test_eq( array( $o['mode'], $o['city'], $o['saved'] ), array( 'closed', 'haifa', '1' ), 'boot imports the module\'s settings before it would seed defaults' );
+
+/* ---- network activation and deactivation reach every site ---- */
+$GLOBALS['dsk_stub_multisite']    = true;
+$GLOBALS['dsk_stub_sites']        = range( 1, 130 );
+$GLOBALS['dsk_stub_site_options'] = array(
+	7 => array( Digitizer_Shabbat_Keeper_Core::DPT_OPTION => array( 'city' => 'eilat' ) ),
+	9 => array( $option => array_merge( Digitizer_Shabbat_Keeper_Settings::defaults(), array( 'city' => 'tiberias' ) ) ),
+);
+$GLOBALS['dsk_stub_options']      = array( 'main' => 'context' );
+$GLOBALS['dsk_stub_filters']      = array();
+$GLOBALS['dsk_stub_purged_sites'] = array();
+add_action( 'digitizer_shabbat_keeper_purge', function () { $GLOBALS['dsk_stub_purged_sites'][] = $GLOBALS['dsk_stub_current_blog']; } );
+Digitizer_Shabbat_Keeper_Core::activate( true );
+dsk_test_eq( $GLOBALS['dsk_stub_purged_sites'], range( 1, 130 ), 'network activation visits all 130 sites, not only the first 100' );
+dsk_test_eq( $GLOBALS['dsk_stub_site_options'][7][ $option ]['city'], 'eilat', 'a sub-site arriving from Digitizer Pro Tools keeps its city' );
+dsk_test_eq( $GLOBALS['dsk_stub_site_options'][9][ $option ]['city'], 'tiberias', 'a sub-site with settings of its own keeps them' );
+dsk_test_eq( $GLOBALS['dsk_stub_site_options'][130][ $option ], Digitizer_Shabbat_Keeper_Settings::defaults(), 'and a new one gets the defaults' );
+dsk_test_eq( $GLOBALS['dsk_stub_options'], array( 'main' => 'context' ), 'the request ends on the site it started on' );
+
+$GLOBALS['dsk_stub_purged_sites'] = array();
+$GLOBALS['dsk_stub_cron'][ Digitizer_Shabbat_Keeper_Enforce::CRON_HOOK ] = 999;
+Digitizer_Shabbat_Keeper_Core::deactivate( true );
+dsk_test_eq( $GLOBALS['dsk_stub_purged_sites'], range( 1, 130 ), 'network deactivation purges every site\'s cached pages' );
+dsk_test_ok( ! isset( $GLOBALS['dsk_stub_cron'][ Digitizer_Shabbat_Keeper_Enforce::CRON_HOOK ] ), 'and drops the pending purge' );
+
+$GLOBALS['dsk_stub_purged_sites'] = array();
+$GLOBALS['dsk_stub_current_blog'] = 1;
+Digitizer_Shabbat_Keeper_Core::deactivate( false );
+dsk_test_eq( count( $GLOBALS['dsk_stub_purged_sites'] ), 1, 'deactivating on one site of a network touches that site only' );
+$GLOBALS['dsk_stub_multisite'] = false;
+$GLOBALS['dsk_stub_filters']   = array();
+
 /* ---- uninstall: a single site ---- */
 define( 'WP_UNINSTALL_PLUGIN', 'digitizer-shabbat-keeper/digitizer-shabbat-keeper.php' );
 $GLOBALS['dsk_stub_options'] = array( $option => array( 'mode' => 'closed' ), 'blogname' => 'Example', Digitizer_Shabbat_Keeper_Core::DPT_OPTION => array( 'mode' => 'closed' ) );

@@ -20,9 +20,10 @@ final class Digitizer_Shabbat_Keeper_Core {
 
 	public static function boot() {
 		// A site that got the files without the activation hook - a network
-		// sub-site, a must-use install - still needs its option.
+		// sub-site, a must-use install - still needs its option, and is owed
+		// the same import an activated site gets.
 		if ( ! is_array( get_option( Digitizer_Shabbat_Keeper_Settings::OPTION ) ) ) {
-			Digitizer_Shabbat_Keeper_Settings::install_defaults();
+			self::seed_site();
 		}
 
 		Digitizer_Shabbat_Keeper_Enforce::register();
@@ -48,10 +49,52 @@ final class Digitizer_Shabbat_Keeper_Core {
 		load_plugin_textdomain( 'digitizer-shabbat-keeper', false, dirname( plugin_basename( DIGITIZER_SHABBAT_KEEPER_FILE ) ) . '/languages' );
 	}
 
-	public static function activate() {
+	/**
+	 * WordPress runs this once, in the site the request came from, even when
+	 * the plugin is switched on for a whole network - so a network activation
+	 * visits every site itself.
+	 *
+	 * @param bool $network_wide Whether the plugin is being activated for the network.
+	 */
+	public static function activate( $network_wide = false ) {
+		self::on_each_site(
+			$network_wide,
+			function () {
+				Digitizer_Shabbat_Keeper_Core::seed_site();
+				Digitizer_Shabbat_Keeper_Enforce::purge_caches();
+			}
+		);
+	}
+
+	/** This site's option: what it chose in Digitizer Pro Tools if it came from there, the defaults otherwise. */
+	public static function seed_site() {
 		self::import_from_dpt();
 		Digitizer_Shabbat_Keeper_Settings::install_defaults();
-		Digitizer_Shabbat_Keeper_Enforce::purge_caches();
+	}
+
+	/**
+	 * Run something in this site, or in every site of the network.
+	 *
+	 * @param bool     $network_wide Whether the whole network is meant.
+	 * @param callable $task         What to run in each site.
+	 */
+	private static function on_each_site( $network_wide, $task ) {
+		if ( ! $network_wide || ! is_multisite() ) {
+			$task();
+			return;
+		}
+		// get_sites() stops at 100 unless the cap is lifted.
+		$sites = get_sites(
+			array(
+				'fields' => 'ids',
+				'number' => 0,
+			)
+		);
+		foreach ( $sites as $site_id ) {
+			switch_to_blog( (int) $site_id );
+			$task();
+			restore_current_blog();
+		}
 	}
 
 	/**
@@ -75,9 +118,21 @@ final class Digitizer_Shabbat_Keeper_Core {
 		return (bool) add_option( Digitizer_Shabbat_Keeper_Settings::OPTION, $clean );
 	}
 
-	/** Nothing of ours keeps running: the pending purge is dropped, and pages cached with a banner or a closed screen are thrown away. */
-	public static function deactivate() {
-		wp_clear_scheduled_hook( Digitizer_Shabbat_Keeper_Enforce::CRON_HOOK );
-		Digitizer_Shabbat_Keeper_Enforce::purge_caches();
+	/**
+	 * Nothing of ours keeps running: the pending purge is dropped, and pages
+	 * cached with a banner or a closed screen are thrown away - in every site
+	 * when the plugin is switched off for a network, since each site has its
+	 * own schedule and its own cache.
+	 *
+	 * @param bool $network_wide Whether the plugin is being deactivated for the network.
+	 */
+	public static function deactivate( $network_wide = false ) {
+		self::on_each_site(
+			$network_wide,
+			function () {
+				wp_clear_scheduled_hook( Digitizer_Shabbat_Keeper_Enforce::CRON_HOOK );
+				Digitizer_Shabbat_Keeper_Enforce::purge_caches();
+			}
+		);
 	}
 }
