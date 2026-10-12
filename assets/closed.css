@@ -8,3 +8,5 @@
 .digitizer-sk-card .digitizer-sk-site{font-size:13px;color:#9aa5b1;margin:24px 0 0}
 .digitizer-sk-banner{position:sticky;top:0;z-index:99999;background:#1f2933;color:#fff;text-align:center;padding:10px 16px;font-size:15px;line-height:1.4}
 .digitizer-sk-closed-form{padding:16px;border:1px solid #d9dde3;border-radius:8px;background:#f6f5f1;text-align:center} .digitizer-sk-closed-notice{font-weight:600} .button.digitizer-sk-closed{opacity:.6;cursor:default}
+.digitizer-sk-card .digitizer-sk-credit{font-size:12px;color:#9aa5b1;margin:8px 0 0}
+.digitizer-sk-card .digitizer-sk-credit a{color:inherit}

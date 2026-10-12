@@ -1,6 +1,8 @@
 <?php
 /**
  * Shabbat Keeper settings: one option, whitelisted on the way in.
+ *
+ * @package Digitizer_Shabbat_Keeper
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
@@ -12,7 +14,7 @@ final class Digitizer_Shabbat_Keeper_Settings {
 	const MODES     = array( 'closed', 'business' );
 	const HAVDALAH  = array( '42', '72' );
 	const OVERRIDES = array( 'auto', 'force_open', 'force_closed' );
-	const BOOLS     = array( 'closed_show_times', 'block_woo', 'block_forms', 'hide_contact', 'banner_on' );
+	const BOOLS     = array( 'closed_show_times', 'block_woo', 'block_forms', 'hide_contact', 'banner_on', 'credit' );
 
 	public static function defaults() {
 		return array(
@@ -31,6 +33,11 @@ final class Digitizer_Shabbat_Keeper_Settings {
 			'hide_contact'      => '0',
 			'banner_on'         => '1',
 			'banner_text'       => '',
+			// A front-end credit is the site owner's to switch on, never ours.
+			'credit'            => '0',
+			// '1' once an administrator has saved the settings screen; until
+			// then wp-admin says which city and mode are in force.
+			'saved'             => '0',
 		);
 	}
 
@@ -92,7 +99,7 @@ final class Digitizer_Shabbat_Keeper_Settings {
 		$city          = isset( $raw['city'] ) ? sanitize_key( $raw['city'] ) : '';
 		$clean['city'] = ( 'custom' === $city || null !== Digitizer_Shabbat_Keeper_Cities::get( $city ) ) ? $city : $d['city'];
 
-		// Israel only: every time this module shows is Asia/Jerusalem wall-clock,
+		// Israel only: every time this plugin shows is Asia/Jerusalem wall-clock,
 		// and the holiday set is the Israeli one, so a custom point is for a
 		// place the city list lacks, not another country. Eilat to the Golan.
 		$clean['custom_lat']    = (string) self::clamp_float( isset( $raw['custom_lat'] ) ? $raw['custom_lat'] : 31.778, 29.4, 33.4 );
@@ -107,13 +114,18 @@ final class Digitizer_Shabbat_Keeper_Settings {
 		$clean['closed_message'] = isset( $raw['closed_message'] ) ? wp_kses_post( wp_unslash( $raw['closed_message'] ) ) : '';
 		$clean['banner_text']    = isset( $raw['banner_text'] ) ? sanitize_text_field( wp_unslash( $raw['banner_text'] ) ) : '';
 
+		// Never from input: only save() and the one-time import set it.
+		$clean['saved'] = '0';
+
 		return $clean;
 	}
 
 	/** Replace the option with a sanitized copy of the submitted fields, defaults filling the rest. */
 	public static function save( $raw ) {
-		$raw = is_array( $raw ) ? $raw : array();
-		update_option( self::OPTION, self::sanitize( array_merge( self::all(), $raw ) ) );
+		$raw            = is_array( $raw ) ? $raw : array();
+		$clean          = self::sanitize( array_merge( self::all(), $raw ) );
+		$clean['saved'] = '1';
+		update_option( self::OPTION, $clean );
 	}
 
 	/** @return array{name:string, lat:float, lon:float, candle:int} */

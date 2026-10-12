@@ -231,3 +231,106 @@ function current_user_can( $cap ) {
 }
 function is_admin() { return (bool) $GLOBALS['dsk_stub_is_admin']; }
 function wp_doing_cron() { return (bool) $GLOBALS['dsk_stub_doing_cron']; }
+function wp_doing_ajax() { return (bool) $GLOBALS['dsk_stub_doing_ajax']; }
+$GLOBALS['dsk_stub_doing_ajax'] = false;
+
+/* ---- responses ---- */
+
+function status_header( $code ) { $GLOBALS['dsk_stub_status'] = (int) $code; }
+function nocache_headers() { $GLOBALS['dsk_stub_nocache'] = true; }
+// Dies the way a test can catch.
+function wp_die( $message = '', $title = '', $args = array() ) { throw new Exception( (string) $message ); }
+
+/* ---- site ---- */
+
+$GLOBALS['dsk_stub_wp_version'] = '6.9';
+$GLOBALS['dsk_stub_multisite']  = false;
+$GLOBALS['dsk_stub_sites']      = array();
+$GLOBALS['dsk_stub_blog_stack'] = array();
+function get_bloginfo( $show = '' ) { return 'version' === $show ? $GLOBALS['dsk_stub_wp_version'] : 'Example Site'; }
+function get_site_icon_url( $size = 512 ) { return ''; }
+function is_rtl() { return true; }
+function language_attributes() { echo 'lang="he-IL" dir="rtl"'; }
+function home_url( $path = '' ) { return 'https://example.test' . $path; }
+function admin_url( $path = '' ) { return 'https://example.test/wp-admin/' . ltrim( (string) $path, '/' ); }
+function plugin_basename( $file ) { return 'digitizer-shabbat-keeper/' . basename( (string) $file ); }
+function is_multisite() { return (bool) $GLOBALS['dsk_stub_multisite']; }
+function get_sites( $args = array() ) {
+	// Core stops at 100 sites unless number is 0; a caller that forgets is
+	// handed a short list here too.
+	$all = $GLOBALS['dsk_stub_sites'];
+	return ( isset( $args['number'] ) && 0 === $args['number'] ) ? $all : array_slice( $all, 0, 100 );
+}
+// Options are per site: switching swaps the store the option stubs read.
+$GLOBALS['dsk_stub_site_options'] = array();
+function switch_to_blog( $id ) {
+	$GLOBALS['dsk_stub_blog_stack'][] = $GLOBALS['dsk_stub_options'];
+	$GLOBALS['dsk_stub_current_blog'] = (int) $id;
+	$GLOBALS['dsk_stub_options']      = isset( $GLOBALS['dsk_stub_site_options'][ $id ] ) ? $GLOBALS['dsk_stub_site_options'][ $id ] : array();
+}
+function restore_current_blog() {
+	$GLOBALS['dsk_stub_site_options'][ $GLOBALS['dsk_stub_current_blog'] ] = $GLOBALS['dsk_stub_options'];
+	$GLOBALS['dsk_stub_options']                                           = array_pop( $GLOBALS['dsk_stub_blog_stack'] );
+}
+
+/* ---- dates ---- */
+
+function wp_date( $format, $ts, $tz = null ) {
+	$d = new DateTime( '@' . $ts );
+	$d->setTimezone( $tz ? $tz : new DateTimeZone( 'Asia/Jerusalem' ) );
+	return $d->format( $format );
+}
+
+/* ---- output helpers ---- */
+
+function esc_html_e( $t, $d = null ) { echo esc_html( $t ); }
+function esc_attr_e( $t, $d = null ) { echo esc_attr( $t ); }
+// Enough of kses for a string with one allowed element: every other tag goes.
+function wp_kses( $s, $allowed ) {
+	$names = implode( '|', array_map( 'preg_quote', array_keys( (array) $allowed ) ) );
+	return preg_replace( '#</?(?!(?:' . $names . ')\b)[a-z0-9]+\b[^>]*>#i', '', (string) $s );
+}
+// Core's signature and shape: a script element with the attributes given.
+function wp_get_inline_script_tag( $js, $attributes = array() ) {
+	$attrs = '';
+	foreach ( (array) $attributes as $k => $v ) {
+		$attrs .= ' ' . $k . '="' . esc_attr( $v ) . '"';
+	}
+	return '<script' . $attrs . ">\n" . $js . "\n</script>\n";
+}
+function wp_print_inline_script_tag( $js, $attributes = array() ) { echo wp_get_inline_script_tag( $js, $attributes ); }
+
+/* ---- styles ---- */
+
+$GLOBALS['dsk_stub_styles']        = array();
+$GLOBALS['dsk_stub_inline_styles'] = array();
+function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false ) {
+	$GLOBALS['dsk_stub_styles'][ $handle ] = array( 'src' => $src, 'ver' => $ver );
+}
+function wp_add_inline_style( $handle, $css ) {
+	$GLOBALS['dsk_stub_inline_styles'][ $handle ][] = $css;
+	return true;
+}
+
+/* ---- urls and nonces ---- */
+
+function add_query_arg( $key, $value = null, $url = '' ) {
+	$pairs = is_array( $key ) ? $key : array( $key => $value );
+	$url   = is_array( $key ) ? (string) $value : (string) $url;
+	return $url . ( false === strpos( $url, '?' ) ? '?' : '&' ) . http_build_query( $pairs );
+}
+// A nonce here is the action behind a fixed prefix: enough to tell the right
+// one from a wrong one and from none.
+function wp_create_nonce( $action ) { return 'nonce-' . $action; }
+function wp_verify_nonce( $nonce, $action ) { return ( 'nonce-' . $action === $nonce ) ? 1 : false; }
+function wp_nonce_url( $url, $action ) { return add_query_arg( '_wpnonce', wp_create_nonce( $action ), $url ); }
+
+/* ---- cron ---- */
+
+$GLOBALS['dsk_stub_cron'] = array();
+function wp_next_scheduled( $hook ) { return isset( $GLOBALS['dsk_stub_cron'][ $hook ] ) ? $GLOBALS['dsk_stub_cron'][ $hook ] : false; }
+function wp_schedule_single_event( $ts, $hook ) {
+	$GLOBALS['dsk_stub_cron'][ $hook ] = $ts;
+	return true;
+}
+function wp_clear_scheduled_hook( $hook ) { unset( $GLOBALS['dsk_stub_cron'][ $hook ] ); }

@@ -3,9 +3,6 @@ require_once __DIR__ . '/bootstrap.php';
 require_once dirname( __DIR__ ) . '/includes/class-digitizer-shabbat-keeper-cities.php';
 require_once dirname( __DIR__ ) . '/includes/class-digitizer-shabbat-keeper-settings.php';
 
-if ( ! function_exists( 'add_option' ) ) {
-	function add_option( $key, $value ) { return update_option( $key, $value ); }
-}
 
 /* ---- defaults ---- */
 $d = Digitizer_Shabbat_Keeper_Settings::defaults();
@@ -15,7 +12,9 @@ dsk_test_eq( $d['havdalah'], '42', 'default havdalah' );
 dsk_test_eq( $d['override'], 'auto', 'default override' );
 dsk_test_eq( $d['hide_contact'], '0', 'contact links shown by default' );
 dsk_test_eq( $d['block_woo'], '1', 'woo blocked by default' );
-dsk_test_eq( count( $d ), 15, 'fifteen keys' );
+dsk_test_eq( count( $d ), 17, 'seventeen keys' );
+dsk_test_eq( $d['credit'], '0', 'the front-end credit is off by default' );
+dsk_test_eq( $d['saved'], '0', 'nothing has been saved yet' );
 
 /* ---- install_defaults seeds, then only fills gaps ---- */
 Digitizer_Shabbat_Keeper_Settings::install_defaults();
@@ -47,7 +46,7 @@ dsk_test_eq( $c['mode'], 'business', 'unknown mode falls back' );
 dsk_test_eq( $c['city'], 'jerusalem', 'unknown city falls back' );
 dsk_test_eq( $c['havdalah'], '42', 'unknown havdalah falls back' );
 dsk_test_eq( $c['override'], 'auto', 'unknown override falls back' );
-dsk_test_eq( $c['custom_lat'], '33.4', 'latitude clamped to Israel (Codex round-9 P2)' );
+dsk_test_eq( $c['custom_lat'], '33.4', 'latitude clamped to Israel' );
 dsk_test_eq( $c['custom_lon'], '34.2', 'longitude clamped to Israel' );
 dsk_test_eq( $c['custom_candle'], '60', 'candle minutes clamped' );
 dsk_test_eq( $c['block_woo'], '1', 'truthy bool is 1' );
@@ -78,5 +77,22 @@ dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::location()['candle'], 30, 'city 
 Digitizer_Shabbat_Keeper_Settings::save( array( 'city' => 'custom', 'custom_lat' => '31.5', 'custom_lon' => '34.9', 'custom_candle' => '25' ) );
 $loc = Digitizer_Shabbat_Keeper_Settings::location();
 dsk_test_eq( array( $loc['lat'], $loc['lon'], $loc['candle'] ), array( 31.5, 34.9, 25 ), 'custom location comes from settings' );
+
+/* ---- saved: set by a save, never by input ---- */
+$GLOBALS['dsk_stub_options'] = array();
+Digitizer_Shabbat_Keeper_Settings::install_defaults();
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'saved' ), '0', 'a fresh install has not been saved' );
+$c = Digitizer_Shabbat_Keeper_Settings::sanitize( array( 'saved' => '1' ) );
+dsk_test_eq( $c['saved'], '0', 'a posted saved flag does not survive sanitize()' );
+Digitizer_Shabbat_Keeper_Settings::save( array( 'city' => 'haifa' ) );
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'saved' ), '1', 'the first save sets it' );
+Digitizer_Shabbat_Keeper_Settings::save( array( 'city' => 'eilat' ) );
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'saved' ), '1', 'and it stays set' );
+
+/* ---- credit round-trips, and is a bool like the others ---- */
+Digitizer_Shabbat_Keeper_Settings::save( array( 'credit' => '1' ) );
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'credit' ), '1', 'credit switched on' );
+Digitizer_Shabbat_Keeper_Settings::save( array( 'credit' => '0' ) );
+dsk_test_eq( Digitizer_Shabbat_Keeper_Settings::get( 'credit' ), '0', 'credit switched off again' );
 
 exit( dsk_test_summary() );

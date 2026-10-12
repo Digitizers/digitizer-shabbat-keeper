@@ -1,23 +1,31 @@
 <?php
 /**
- * Shabbat Keeper settings screen.
+ * The settings screen (Settings > Shabbat Keeper), the plugin-row link to it,
+ * and the notice shown until the settings have been saved once.
+ *
+ * @package Digitizer_Shabbat_Keeper
  */
 
-if ( ! defined( 'ABSPATH' ) ) { exit; }
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 final class Digitizer_Shabbat_Keeper_Admin {
 
-	const PAGE_SLUG = 'dpt-shabbat-keeper';
-	const NONCE     = 'digitizer_sk_settings_nonce';
+	const PAGE_SLUG  = 'digitizer-shabbat-keeper';
+	const NONCE      = 'digitizer_sk_settings_nonce';
+	const SAVED_FLAG = 'digitizer_sk_saved';
 
 	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_post_digitizer_sk_save', array( $this, 'handle_save' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_show_notices' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_show_setup_notice' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( DIGITIZER_SHABBAT_KEEPER_FILE ), array( $this, 'action_links' ) );
 	}
 
-	public function register_menu( $parent_slug ) {
-		add_submenu_page(
-			$parent_slug,
+	public function register_menu() {
+		add_options_page(
 			__( 'Shabbat Keeper', 'digitizer-shabbat-keeper' ),
 			__( 'Shabbat Keeper', 'digitizer-shabbat-keeper' ),
 			'manage_options',
@@ -26,16 +34,61 @@ final class Digitizer_Shabbat_Keeper_Admin {
 		);
 	}
 
-	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only display flag from our own redirect.
+	public static function settings_url() {
+		return admin_url( 'options-general.php?page=' . self::PAGE_SLUG );
+	}
+
+	/** A "Settings" link in the plugin's row on the Plugins screen. */
+	public function action_links( $links ) {
+		$links   = is_array( $links ) ? $links : array();
+		$links[] = '<a href="' . esc_url( self::settings_url() ) . '">' . esc_html__( 'Settings', 'digitizer-shabbat-keeper' ) . '</a>';
+		return $links;
+	}
+
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only display flags: which admin page this is, and whether our own redirect just landed here.
 	public function maybe_show_notices() {
-		if ( self::PAGE_SLUG !== dpt_current_admin_page() ) {
+		if ( ! isset( $_GET['page'] ) || self::PAGE_SLUG !== sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
 			return;
 		}
-		if ( isset( $_GET['dpt_saved'] ) ) {
+		if ( isset( $_GET[ self::SAVED_FLAG ] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved.', 'digitizer-shabbat-keeper' ) . '</p></div>';
 		}
 	}
 	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+	/**
+	 * The plugin enforces from the moment it is activated, with Jerusalem's
+	 * times until someone says otherwise. Until the settings have been saved
+	 * once, the Dashboard and the Plugins screen say which city and mode are
+	 * in force, so a first Shabbat in the wrong city is never a surprise.
+	 */
+	public function maybe_show_setup_notice() {
+		$html = self::setup_notice_html( function_exists( 'get_current_screen' ) && get_current_screen() ? get_current_screen()->id : '' );
+		if ( '' !== $html ) {
+			echo wp_kses_post( $html );
+		}
+	}
+
+	/** The notice for a screen id, or '' when there is nothing to say there. */
+	public static function setup_notice_html( $screen_id ) {
+		if ( ! in_array( $screen_id, array( 'dashboard', 'plugins' ), true ) ) {
+			return '';
+		}
+		if ( ! current_user_can( 'manage_options' ) || '1' === Digitizer_Shabbat_Keeper_Settings::get( 'saved' ) ) {
+			return '';
+		}
+		$loc  = Digitizer_Shabbat_Keeper_Settings::location();
+		$mode = 'closed' === Digitizer_Shabbat_Keeper_Settings::get( 'mode' )
+			? __( 'the whole site closes', 'digitizer-shabbat-keeper' )
+			: __( 'purchases and forms are refused', 'digitizer-shabbat-keeper' );
+		$text = sprintf(
+			/* translators: 1: city name, 2: what happens during a closure. */
+			__( 'Shabbat Keeper is active with the times of %1$s: from candle lighting to Havdalah, %2$s.', 'digitizer-shabbat-keeper' ),
+			$loc['name'],
+			$mode
+		);
+		return '<div class="notice notice-info"><p>' . esc_html( $text ) . ' <a href="' . esc_url( self::settings_url() ) . '">' . esc_html__( 'Choose your city and mode', 'digitizer-shabbat-keeper' ) . '</a></p></div>';
+	}
 
 	public function handle_save() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -43,13 +96,13 @@ final class Digitizer_Shabbat_Keeper_Admin {
 		}
 		check_admin_referer( self::NONCE );
 
-		// Raw array on purpose: Digitizer_Shabbat_Keeper_Settings::sanitize() unslashes and
-		// whitelists every field itself.
+		// Raw array on purpose: Digitizer_Shabbat_Keeper_Settings::sanitize()
+		// unslashes and whitelists every field itself.
 		$data = isset( $_POST['digitizer_sk'] ) && is_array( $_POST['digitizer_sk'] ) ? $_POST['digitizer_sk'] : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Sanitized per field in Digitizer_Shabbat_Keeper_Settings::sanitize().
 		Digitizer_Shabbat_Keeper_Settings::save( $data );
 		Digitizer_Shabbat_Keeper_Enforce::on_settings_saved();
 
-		wp_safe_redirect( add_query_arg( array( 'page' => self::PAGE_SLUG, 'dpt_saved' => 1 ), admin_url( 'admin.php' ) ) );
+		wp_safe_redirect( add_query_arg( self::SAVED_FLAG, 1, self::settings_url() ) );
 		exit;
 	}
 
@@ -85,31 +138,34 @@ final class Digitizer_Shabbat_Keeper_Admin {
 		$closed = Digitizer_Shabbat_Keeper_Enforce::is_closed();
 		// The first window still ahead: under force_open inside a real window
 		// the list starts with that window, whose start is already past.
-		$ahead = array_values( array_filter( $next, function ( $w ) use ( $now ) {
-			return $w['start'] > $now;
-		} ) );
+		$ahead = array_values(
+			array_filter(
+				$next,
+				function ( $w ) use ( $now ) {
+					return $w['start'] > $now;
+				}
+			)
+		);
 		/* translators: PHP date format for a closure start or end: weekday, day.month, time. */
 		$fmt = __( 'D j.n H:i', 'digitizer-shabbat-keeper' );
 		?>
-		<div class="wrap dpt-wrap">
-			<h1 class="dpt-title">
-				<span class="dashicons dashicons-clock"></span>
-				<?php esc_html_e( 'Shabbat Keeper', 'digitizer-shabbat-keeper' ); ?>
-				<span class="dpt-version">v<?php echo esc_html( DPT_VERSION ); ?></span>
-			</h1>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Shabbat Keeper', 'digitizer-shabbat-keeper' ); ?></h1>
 
-			<div class="dpt-panel">
-				<h2><?php esc_html_e( 'Status', 'digitizer-shabbat-keeper' ); ?></h2>
+			<div class="digitizer-sk-section">
+				<h2 class="title"><?php esc_html_e( 'Status', 'digitizer-shabbat-keeper' ); ?></h2>
 				<p>
 					<strong><?php echo $closed ? esc_html__( 'Now: closed', 'digitizer-shabbat-keeper' ) : esc_html__( 'Now: open', 'digitizer-shabbat-keeper' ); ?></strong>
 					<?php if ( $closed ) : ?>
+						<?php /* translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted". */ ?>
 						&middot; <?php echo esc_html( sprintf( __( 'Reopens %s', 'digitizer-shabbat-keeper' ), Digitizer_Shabbat_Keeper_Enforce::reopens_text() ) ); ?>
 					<?php elseif ( ! empty( $ahead ) ) : ?>
+						<?php /* translators: %s: weekday, date and time of the next closure. */ ?>
 						&middot; <?php echo esc_html( sprintf( __( 'Next closing: %s', 'digitizer-shabbat-keeper' ), wp_date( $fmt, $ahead[0]['start'], $tz ) ) ); ?>
 					<?php endif; ?>
 					&middot; <?php echo esc_html( Digitizer_Shabbat_Keeper_Settings::location()['name'] ); ?>
 				</p>
-				<p><a class="button" target="_blank" rel="noopener" href="<?php echo esc_url( add_query_arg( 'digitizer_shabbat', 'preview', home_url( '/' ) ) ); ?>"><?php esc_html_e( 'Preview the closed site', 'digitizer-shabbat-keeper' ); ?></a></p>
+				<p><a class="button" target="_blank" rel="noopener" href="<?php echo esc_url( Digitizer_Shabbat_Keeper_Enforce::preview_url() ); ?>"><?php esc_html_e( 'Preview the closed site', 'digitizer-shabbat-keeper' ); ?></a></p>
 				<h3><?php esc_html_e( 'Upcoming closures', 'digitizer-shabbat-keeper' ); ?></h3>
 				<table class="widefat striped">
 					<thead><tr>
@@ -134,14 +190,14 @@ final class Digitizer_Shabbat_Keeper_Admin {
 				<input type="hidden" name="action" value="digitizer_sk_save" />
 				<?php wp_nonce_field( self::NONCE ); ?>
 
-				<div class="dpt-panel">
-					<h2><?php esc_html_e( 'Mode', 'digitizer-shabbat-keeper' ); ?></h2>
+				<div class="digitizer-sk-section">
+					<h2 class="title"><?php esc_html_e( 'Mode', 'digitizer-shabbat-keeper' ); ?></h2>
 					<p><label><input type="radio" name="digitizer_sk[mode]" value="closed" <?php checked( $o['mode'], 'closed' ); ?> /> <?php esc_html_e( 'Closed - every visitor sees a "closed for Shabbat" page', 'digitizer-shabbat-keeper' ); ?></label></p>
 					<p><label><input type="radio" name="digitizer_sk[mode]" value="business" <?php checked( $o['mode'], 'business' ); ?> /> <?php esc_html_e( 'Open to read, closed for business - pages stay readable; purchases and forms are refused', 'digitizer-shabbat-keeper' ); ?></label></p>
 				</div>
 
-				<div class="dpt-panel">
-					<h2><?php esc_html_e( 'Location', 'digitizer-shabbat-keeper' ); ?></h2>
+				<div class="digitizer-sk-section">
+					<h2 class="title"><?php esc_html_e( 'Location', 'digitizer-shabbat-keeper' ); ?></h2>
 					<table class="form-table"><tbody>
 						<tr>
 							<th scope="row"><label for="digitizer_sk_city"><?php esc_html_e( 'City', 'digitizer-shabbat-keeper' ); ?></label></th>
@@ -172,8 +228,8 @@ final class Digitizer_Shabbat_Keeper_Admin {
 					</tbody></table>
 				</div>
 
-				<div class="dpt-panel">
-					<h2><?php esc_html_e( 'Closed page', 'digitizer-shabbat-keeper' ); ?></h2>
+				<div class="digitizer-sk-section">
+					<h2 class="title"><?php esc_html_e( 'Closed page', 'digitizer-shabbat-keeper' ); ?></h2>
 					<table class="form-table"><tbody>
 						<tr>
 							<th scope="row"><label for="digitizer_sk_closed_title"><?php esc_html_e( 'Title', 'digitizer-shabbat-keeper' ); ?></label></th>
@@ -190,11 +246,18 @@ final class Digitizer_Shabbat_Keeper_Admin {
 							<th scope="row"><?php esc_html_e( 'Show the reopening time', 'digitizer-shabbat-keeper' ); ?></th>
 							<td><?php $this->switch_field( 'closed_show_times', $o['closed_show_times'] ); ?></td>
 						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Credit', 'digitizer-shabbat-keeper' ); ?></th>
+							<td>
+								<?php $this->switch_field( 'credit', $o['credit'], __( 'Show "Shabbat Keeper by Digitizer" under the closed message', 'digitizer-shabbat-keeper' ) ); ?>
+								<p class="description"><?php esc_html_e( 'Off unless you switch it on. It appears on the closed page only.', 'digitizer-shabbat-keeper' ); ?></p>
+							</td>
+						</tr>
 					</tbody></table>
 				</div>
 
-				<div class="dpt-panel">
-					<h2><?php esc_html_e( 'Business mode', 'digitizer-shabbat-keeper' ); ?></h2>
+				<div class="digitizer-sk-section">
+					<h2 class="title"><?php esc_html_e( 'Business mode', 'digitizer-shabbat-keeper' ); ?></h2>
 					<table class="form-table"><tbody>
 						<tr><th scope="row"><?php esc_html_e( 'Refuse WooCommerce purchases', 'digitizer-shabbat-keeper' ); ?></th><td><?php $this->switch_field( 'block_woo', $o['block_woo'] ); ?></td></tr>
 						<tr><th scope="row"><?php esc_html_e( 'Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)', 'digitizer-shabbat-keeper' ); ?></th><td><?php $this->switch_field( 'block_forms', $o['block_forms'] ); ?></td></tr>
@@ -204,35 +267,53 @@ final class Digitizer_Shabbat_Keeper_Admin {
 							<th scope="row"><label for="digitizer_sk_banner_text"><?php esc_html_e( 'Banner text', 'digitizer-shabbat-keeper' ); ?></label></th>
 							<td>
 								<input type="text" id="digitizer_sk_banner_text" name="digitizer_sk[banner_text]" value="<?php echo esc_attr( $o['banner_text'] ); ?>" class="large-text" placeholder="<?php echo esc_attr( Digitizer_Shabbat_Keeper_Settings::text( 'banner_text' ) ); ?>" />
+								<?php /* translators: %s is shown to the reader as it is: it is the placeholder they type into the banner text. */ ?>
 								<p class="description"><?php esc_html_e( '%s is replaced by the reopening time.', 'digitizer-shabbat-keeper' ); ?></p>
 							</td>
 						</tr>
 					</tbody></table>
 				</div>
 
-				<div class="dpt-panel">
-					<h2><?php esc_html_e( 'Override', 'digitizer-shabbat-keeper' ); ?></h2>
+				<div class="digitizer-sk-section">
+					<h2 class="title"><?php esc_html_e( 'Override', 'digitizer-shabbat-keeper' ); ?></h2>
 					<p><label><input type="radio" name="digitizer_sk[override]" value="auto" <?php checked( $o['override'], 'auto' ); ?> /> <?php esc_html_e( 'Automatic (by the calendar)', 'digitizer-shabbat-keeper' ); ?></label></p>
 					<p><label><input type="radio" name="digitizer_sk[override]" value="force_open" <?php checked( $o['override'], 'force_open' ); ?> /> <?php esc_html_e( 'Force open', 'digitizer-shabbat-keeper' ); ?></label></p>
 					<p><label><input type="radio" name="digitizer_sk[override]" value="force_closed" <?php checked( $o['override'], 'force_closed' ); ?> /> <?php esc_html_e( 'Force closed', 'digitizer-shabbat-keeper' ); ?></label></p>
 					<p class="description"><?php esc_html_e( 'A forced state ignores the calendar until you switch back to automatic.', 'digitizer-shabbat-keeper' ); ?></p>
 				</div>
 
-				<p class="dpt-actions">
-					<button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Save Settings', 'digitizer-shabbat-keeper' ); ?></button>
-				</p>
+				<?php submit_button( __( 'Save Settings', 'digitizer-shabbat-keeper' ) ); ?>
 			</form>
+
+			<p class="description">
+				<?php
+				echo wp_kses(
+					sprintf(
+						/* translators: %s: the name Digitizer, linked to its website. */
+						__( 'Shabbat Keeper is built by %s - WordPress sites and maintenance for Israeli businesses.', 'digitizer-shabbat-keeper' ),
+						'<a href="https://www.digitizer.studio/" target="_blank" rel="noopener">Digitizer</a>'
+					),
+					array(
+						'a' => array(
+							'href'   => array(),
+							'target' => array(),
+							'rel'    => array(),
+						),
+					)
+				);
+				?>
+			</p>
 		</div>
 		<?php
 	}
 
-	/** Hidden 0 before the checkbox so an unticked switch still posts, as Cookie Banner does. */
-	private function switch_field( $name, $checked ) {
+	/** A checkbox with a hidden 0 before it, so an unticked box still posts and can switch a setting off. */
+	private function switch_field( $name, $checked, $label = '' ) {
 		?>
-		<label class="dpt-switch">
+		<label>
 			<input type="hidden" name="digitizer_sk[<?php echo esc_attr( $name ); ?>]" value="0" />
 			<input type="checkbox" name="digitizer_sk[<?php echo esc_attr( $name ); ?>]" value="1" <?php checked( $checked, '1' ); ?> />
-			<span class="dpt-switch-slider"></span>
+			<?php echo esc_html( $label ); ?>
 		</label>
 		<?php
 	}

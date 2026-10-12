@@ -8,9 +8,6 @@ require_once dirname( __DIR__ ) . '/includes/class-digitizer-shabbat-keeper-sett
 require_once dirname( __DIR__ ) . '/includes/class-digitizer-shabbat-keeper-enforce.php';
 require_once dirname( __DIR__ ) . '/includes/class-digitizer-shabbat-keeper-integrations.php';
 
-if ( ! function_exists( 'add_option' ) ) { function add_option( $k, $v ) { return update_option( $k, $v ); } }
-function wp_date( $format, $ts, $tz = null ) { $d = new DateTime( '@' . $ts ); $d->setTimezone( $tz ? $tz : new DateTimeZone( 'Asia/Jerusalem' ) ); return $d->format( $format ); }
-function wp_doing_ajax() { return (bool) $GLOBALS['dsk_stub_doing_ajax']; }
 $GLOBALS['dsk_stub_doing_ajax'] = false;
 $GLOBALS['dsk_stub_is_admin'] = false; // A visitor-facing request by default; refusals_apply() also checks is_admin().
 $GLOBALS['dsk_stub_notices'] = array();
@@ -42,7 +39,7 @@ dsk_test_ok( dsk_stub_has_filter( 'wpforms_process_before' ), 'WPForms hooked' )
 dsk_test_ok( dsk_stub_has_filter( 'elementor_pro/forms/validation' ), 'Elementor forms hooked' );
 dsk_test_ok( ! dsk_stub_has_filter( 'gform_validation' ), 'Gravity Forms absent, not hooked' );
 dsk_test_ok( dsk_stub_has_filter( 'do_shortcode_tag' ), 'shortcode markup hooked' );
-dsk_test_ok( dsk_stub_has_filter( 'pre_comment_on_post' ), 'comment posts hooked (Codex round-12 P2)' );
+dsk_test_ok( dsk_stub_has_filter( 'pre_comment_on_post' ), 'comment posts hooked' );
 
 /* ---- closed, visitor ---- */
 dsk_test_eq( apply_filters( 'woocommerce_is_purchasable', true, null ), false, 'nothing purchasable on Shabbat' );
@@ -51,7 +48,7 @@ dsk_test_eq( $GLOBALS['dsk_stub_notices'][0][1], 'error', 'refusal is an error n
 $errors = new WP_Error();
 apply_filters( 'woocommerce_store_api_cart_errors', $errors, null );
 dsk_test_ok( in_array( 'digitizer_shabbat_keeper', $errors->get_error_codes(), true ), 'Store API gets an error' );
-dsk_test_ok( dsk_stub_has_filter( 'woocommerce_valid_order_statuses_for_payment' ), 'order-pay statuses filter hooked (Codex round-5 P1)' );
+dsk_test_ok( dsk_stub_has_filter( 'woocommerce_valid_order_statuses_for_payment' ), 'order-pay statuses filter hooked' );
 dsk_test_ok( dsk_stub_has_filter( 'woocommerce_before_pay_action' ), 'order-pay handler hooked' );
 dsk_test_eq( apply_filters( 'woocommerce_valid_order_statuses_for_payment', array( 'pending', 'failed' ), null ), array(), 'no order may be paid while closed' );
 $thrown = null;
@@ -83,7 +80,6 @@ dsk_test_ok( isset( $GLOBALS['dsk_stub_wpforms']->process->errors[9]['header'] )
 $ajax = new class() { public $errors = array(); public function add_error_message( $m ) { $this->errors[] = $m; } };
 do_action_stub( 'elementor_pro/forms/validation', null, $ajax );
 dsk_test_eq( count( $ajax->errors ), 1, 'Elementor submission refused' );
-if ( ! function_exists( 'wp_die' ) ) { function wp_die( $m = '', $t = '', $a = array() ) { throw new Exception( (string) $m ); } }
 dsk_test_eq( apply_filters( 'comments_open', true, 5 ), false, 'comment forms closed while closed' );
 $died = null;
 try { do_action_stub( 'pre_comment_on_post', 5 ); } catch ( Exception $e ) { $died = $e->getMessage(); }
@@ -162,7 +158,7 @@ add_filter( 'digitizer_shabbat_keeper_now', function () use ( &$clock ) { return
 Digitizer_Shabbat_Keeper_Settings::save( array( 'mode' => 'closed', 'block_forms' => '0' ) );
 Digitizer_Shabbat_Keeper_Enforce::reset();
 Digitizer_Shabbat_Keeper_Integrations::hook_plugins();
-dsk_test_ok( dsk_stub_has_filter( 'pre_comment_on_post' ), 'closed mode guards comments even with forms switched off (Codex round-13 P2)' );
+dsk_test_ok( dsk_stub_has_filter( 'pre_comment_on_post' ), 'closed mode guards comments even with forms switched off' );
 dsk_test_ok( dsk_stub_has_filter( 'comments_open' ), 'closed mode closes comment forms even with forms switched off' );
 
 /* Actions in the harness share the filter registry; run one by hand. */

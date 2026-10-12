@@ -2,8 +2,11 @@
 /**
  * Decides "closed now" for the current request and applies it: the 503
  * page in closed mode, the banner and contact CSS in business mode, a
- * cache lifetime bounded by the next transition, and a cron purge at
- * that transition. Truth is always the computation, never the cron.
+ * purge of page caches at each transition and a small script that reloads
+ * a page once its transition has passed. Truth is always the computation,
+ * never the cron.
+ *
+ * @package Digitizer_Shabbat_Keeper
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
@@ -20,11 +23,11 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 	private static $banner_printed = false;
 
 	public static function register() {
-		// Priority 0: Content Control's whole-site protection exits at priority 1
-		// (redirect or 403) and would otherwise answer first; the Shabbat 503 is
-		// the earlier decision.
+		// Priority 0: membership and access plugins answer at priority 1 and up
+		// with a redirect or a 403, and would otherwise answer first; the
+		// Shabbat 503 is the earlier decision.
 		add_action( 'template_redirect', array( __CLASS__, 'maybe_block' ), 0 );
-		add_action( 'wp_head', array( __CLASS__, 'print_head_css' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 		add_action( 'wp_body_open', array( __CLASS__, 'print_banner' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'print_banner_fallback' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'print_transition_script' ), 99 );
@@ -52,11 +55,28 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		return (int) apply_filters( 'digitizer_shabbat_keeper_now', time() );
 	}
 
-	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only preview flag; it changes nothing and only an administrator can use it.
+	const PREVIEW_NONCE = 'digitizer_shabbat_preview';
+
+	/**
+	 * An administrator looking at the closed site through the link on the
+	 * settings screen. The flag changes nothing, but it does decide what a
+	 * logged-in administrator sees, so it carries a nonce: a link someone
+	 * else crafted cannot make the site look closed to its owner.
+	 */
 	public static function is_preview() {
-		return isset( $_GET['digitizer_shabbat'] ) && 'preview' === $_GET['digitizer_shabbat'] && current_user_can( 'manage_options' );
+		if ( ! isset( $_GET['digitizer_shabbat'], $_GET['_wpnonce'] ) || 'preview' !== $_GET['digitizer_shabbat'] ) {
+			return false;
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+		return (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), self::PREVIEW_NONCE );
 	}
-	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+	/** The front page as a visitor would see it during a closure. */
+	public static function preview_url() {
+		return wp_nonce_url( add_query_arg( 'digitizer_shabbat', 'preview', home_url( '/' ) ), self::PREVIEW_NONCE );
+	}
 
 	public static function is_closed() {
 		if ( null !== self::$closed ) {
@@ -152,6 +172,7 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		$icon    = get_site_icon_url( 128 );
 		$site    = get_bloginfo( 'name' );
 		$script  = self::transition_script();
+		$credit  = '1' === Digitizer_Shabbat_Keeper_Settings::get( 'credit' );
 		ob_start();
 		include DIGITIZER_SHABBAT_KEEPER_PATH . 'views/closed-screen.php';
 		return (string) ob_get_clean();
@@ -231,19 +252,20 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		}
 		self::$banner_printed = true;
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped parts in banner_html().
-		echo '<script>(function(){var b=document.querySelector(".digitizer-sk-banner");if(b&&document.body.firstChild!==b){document.body.insertBefore(b,document.body.firstChild);}})();</script>';
+		wp_print_inline_script_tag( '(function(){var b=document.querySelector(".digitizer-sk-banner");if(b&&document.body.firstChild!==b){document.body.insertBefore(b,document.body.firstChild);}})();' );
 	}
 
-	public static function print_head_css() {
+	const STYLE_HANDLE = 'digitizer-shabbat-keeper';
+	const CONTACT_CSS  = 'a[href^="tel:"],a[href*="wa.me"],a[href*="api.whatsapp.com"]{display:none !important}';
+
+	/** The banner and refusal styles, and the rule that hides contact links, on pages where business mode applies. */
+	public static function enqueue_assets() {
 		if ( ! self::is_front_request() || 'business' !== Digitizer_Shabbat_Keeper_Settings::get( 'mode' ) || ! self::applies() ) {
 			return;
 		}
-		$css = self::css();
+		wp_enqueue_style( self::STYLE_HANDLE, DIGITIZER_SHABBAT_KEEPER_URL . 'assets/closed.css', array(), DIGITIZER_SHABBAT_KEEPER_VERSION );
 		if ( '1' === Digitizer_Shabbat_Keeper_Settings::get( 'hide_contact' ) ) {
-			$css .= 'a[href^="tel:"],a[href*="wa.me"],a[href*="api.whatsapp.com"]{display:none !important}';
-		}
-		if ( '' !== $css ) {
-			echo '<style id="digitizer-sk-css">' . $css . '</style>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static CSS shipped with the plugin.
+			wp_add_inline_style( self::STYLE_HANDLE, self::CONTACT_CSS );
 		}
 	}
 
@@ -262,16 +284,21 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 	 * transition, and idle once the reloaded page carries the matching query.
 	 */
 	public static function print_transition_script() {
-		echo self::transition_script(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static script with one integer.
+		$js = self::transition_script();
+		if ( '' !== $js ) {
+			wp_print_inline_script_tag( $js, array( 'id' => self::SCRIPT_ID ) );
+		}
 	}
 
-	/** The script above as a string, or '' when it does not apply; the closed screen embeds it too, since that response exits before wp_footer. */
+	const SCRIPT_ID = 'digitizer-sk-transition';
+
+	/** The script above as bare JavaScript, or '' when it does not apply; the closed screen prints it too, since that response exits before wp_footer. */
 	public static function transition_script() {
 		if ( ! self::is_front_request() || 'auto' !== Digitizer_Shabbat_Keeper_Settings::get( 'override' ) ) {
 			return '';
 		}
 		$t = (int) self::zmanim()->next_transition( self::now() );
-		return '<script id="digitizer-sk-transition">(function(){var t=' . $t . ',n=Math.floor(Date.now()/1000);function q(){try{return new URL(location.href).searchParams.get("digitizer_sk");}catch(e){return null;}}function go(){var u;try{u=new URL(location.href);}catch(e){return;}u.searchParams.set("digitizer_sk",String(t));location.replace(u.toString());}if(n>=t){if(q()!==String(t)){go();}return;}setTimeout(go,Math.min((t-n+2)*1000,2e9));})();</script>';
+		return '(function(){var t=' . $t . ',n=Math.floor(Date.now()/1000);function q(){try{return new URL(location.href).searchParams.get("digitizer_sk");}catch(e){return null;}}function go(){var u;try{u=new URL(location.href);}catch(e){return;}u.searchParams.set("digitizer_sk",String(t));location.replace(u.toString());}if(n>=t){if(q()!==String(t)){go();}return;}setTimeout(go,Math.min((t-n+2)*1000,2e9));})();';
 	}
 
 	public static function ensure_transition_event() {

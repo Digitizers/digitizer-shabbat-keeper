@@ -1,6 +1,14 @@
 <?php
 /**
- * The page a visitor sees in closed mode. Rendered by Digitizer_Shabbat_Keeper_Enforce.
+ * The page a visitor sees in closed mode. Rendered by
+ * Digitizer_Shabbat_Keeper_Enforce::render_closed_screen(), which sets
+ * $title, $message, $reopens, $city, $css, $icon, $site, $script and $credit.
+ *
+ * This response is sent and the request ends before wp_head would run, so
+ * nothing can be enqueued for it: its one stylesheet is read from the
+ * plugin's own assets/closed.css and printed inline.
+ *
+ * @package Digitizer_Shabbat_Keeper
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
@@ -25,7 +33,30 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		<p class="digitizer-sk-reopens"><?php echo esc_html( $reopens ); ?></p>
 	<?php endif; ?>
 	<p class="digitizer-sk-site"><?php echo esc_html( $site ); ?><?php if ( '' !== $city ) : ?> &middot; <?php echo esc_html( $city ); ?><?php endif; ?></p>
+	<?php if ( $credit ) : ?>
+		<p class="digitizer-sk-credit">
+			<?php
+			echo wp_kses(
+				sprintf(
+					/* translators: %s: the name Digitizer, linked to its website. */
+					__( 'Shabbat Keeper by %s', 'digitizer-shabbat-keeper' ),
+					'<a href="https://www.digitizer.studio/" rel="noopener">Digitizer</a>'
+				),
+				array(
+					'a' => array(
+						'href' => array(),
+						'rel'  => array(),
+					),
+				)
+			);
+			?>
+		</p>
+	<?php endif; ?>
 </main>
-<?php echo $script; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static script with one integer, built by Digitizer_Shabbat_Keeper_Enforce::transition_script(). ?>
+<?php
+if ( '' !== $script ) {
+	wp_print_inline_script_tag( $script, array( 'id' => Digitizer_Shabbat_Keeper_Enforce::SCRIPT_ID ) );
+}
+?>
 </body>
 </html>
