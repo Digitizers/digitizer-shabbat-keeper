@@ -255,6 +255,7 @@ function home_url( $path = '' ) { return 'https://example.test' . $path; }
 function admin_url( $path = '' ) { return 'https://example.test/wp-admin/' . ltrim( (string) $path, '/' ); }
 function plugin_basename( $file ) { return 'digitizer-shabbat-keeper/' . basename( (string) $file ); }
 function is_multisite() { return (bool) $GLOBALS['dsk_stub_multisite']; }
+function get_current_blog_id() { return isset( $GLOBALS['dsk_stub_current_blog'] ) ? (int) $GLOBALS['dsk_stub_current_blog'] : 1; }
 function get_sites( $args = array() ) {
 	// Core stops at 100 sites unless number is 0; a caller that forgets is
 	// handed a short list here too.

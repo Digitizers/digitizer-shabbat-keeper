@@ -16,6 +16,9 @@ function load_plugin_textdomain( $domain, $deprecated = false, $rel_path = false
 }
 $GLOBALS['dsk_stub_purges'] = 0;
 add_action( 'digitizer_shabbat_keeper_purge', function () { $GLOBALS['dsk_stub_purges']++; } );
+/* WP Super Cache is installed on this pretend site; 0 means "the whole cache tree". */
+$GLOBALS['dsk_stub_wpsc'] = array();
+function wp_cache_clear_cache( $blog_id = 0 ) { $GLOBALS['dsk_stub_wpsc'][] = $blog_id; }
 
 $option = Digitizer_Shabbat_Keeper_Settings::OPTION;
 
@@ -23,6 +26,7 @@ $option = Digitizer_Shabbat_Keeper_Settings::OPTION;
 Digitizer_Shabbat_Keeper_Core::activate();
 dsk_test_eq( get_option( $option ), Digitizer_Shabbat_Keeper_Settings::defaults(), 'activation seeds the defaults' );
 dsk_test_eq( $GLOBALS['dsk_stub_purges'], 1, 'activation purges page caches: every page is about to change' );
+dsk_test_eq( $GLOBALS['dsk_stub_wpsc'], array( 0 ), 'on a single site WP Super Cache is emptied as a whole' );
 
 /* ---- activation again changes nothing ---- */
 Digitizer_Shabbat_Keeper_Settings::save( array( 'city' => 'haifa' ) );
@@ -101,8 +105,10 @@ $GLOBALS['dsk_stub_options']      = array( 'main' => 'context' );
 $GLOBALS['dsk_stub_filters']      = array();
 $GLOBALS['dsk_stub_purged_sites'] = array();
 add_action( 'digitizer_shabbat_keeper_purge', function () { $GLOBALS['dsk_stub_purged_sites'][] = $GLOBALS['dsk_stub_current_blog']; } );
+$GLOBALS['dsk_stub_wpsc'] = array();
 Digitizer_Shabbat_Keeper_Core::activate( true );
 dsk_test_eq( $GLOBALS['dsk_stub_purged_sites'], range( 1, 130 ), 'network activation visits all 130 sites, not only the first 100' );
+dsk_test_eq( $GLOBALS['dsk_stub_wpsc'], range( 1, 130 ), 'and empties each site\'s own WP Super Cache, never the whole network\'s' );
 dsk_test_eq( $GLOBALS['dsk_stub_site_options'][7][ $option ]['city'], 'eilat', 'a sub-site arriving from Digitizer Pro Tools keeps its city' );
 dsk_test_eq( $GLOBALS['dsk_stub_site_options'][9][ $option ]['city'], 'tiberias', 'a sub-site with settings of its own keeps them' );
 dsk_test_eq( $GLOBALS['dsk_stub_site_options'][130][ $option ], Digitizer_Shabbat_Keeper_Settings::defaults(), 'and a new one gets the defaults' );
@@ -118,6 +124,7 @@ $GLOBALS['dsk_stub_purged_sites'] = array();
 $GLOBALS['dsk_stub_current_blog'] = 1;
 Digitizer_Shabbat_Keeper_Core::deactivate( false );
 dsk_test_eq( count( $GLOBALS['dsk_stub_purged_sites'] ), 1, 'deactivating on one site of a network touches that site only' );
+dsk_test_eq( end( $GLOBALS['dsk_stub_wpsc'] ), 1, 'and only that site\'s cache' );
 $GLOBALS['dsk_stub_multisite'] = false;
 $GLOBALS['dsk_stub_filters']   = array();
 
