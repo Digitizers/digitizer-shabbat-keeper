@@ -16,6 +16,7 @@ $html = Digitizer_Shabbat_Keeper_Admin::setup_notice_html( 'plugins' );
 dsk_test_ok( false !== strpos( $html, 'Jerusalem' ), 'the notice names the city in force' );
 dsk_test_ok( false !== strpos( $html, 'purchases and forms are refused' ), 'and what the default mode does' );
 dsk_test_ok( false !== strpos( $html, 'options-general.php?page=digitizer-shabbat-keeper' ), 'and links to the settings screen' );
+dsk_test_ok( false !== strpos( $html, 'admin-post.php?action=digitizer_sk_dismiss' ) && false !== strpos( $html, '_wpnonce=nonce-digitizer_sk_dismiss' ), 'and can be dismissed for good, behind a nonce' );
 dsk_test_ok( '' !== Digitizer_Shabbat_Keeper_Admin::setup_notice_html( 'dashboard' ), 'shown on the Dashboard too' );
 dsk_test_eq( Digitizer_Shabbat_Keeper_Admin::setup_notice_html( 'edit-post' ), '', 'and nowhere else' );
 dsk_test_eq( Digitizer_Shabbat_Keeper_Admin::setup_notice_html( '' ), '', 'not without a screen' );
@@ -26,6 +27,18 @@ $GLOBALS['dsk_stub_denied_caps'] = array();
 
 Digitizer_Shabbat_Keeper_Settings::save( array( 'mode' => 'closed', 'city' => 'haifa' ) );
 dsk_test_eq( Digitizer_Shabbat_Keeper_Admin::setup_notice_html( 'plugins' ), '', 'gone once the settings have been saved' );
+
+/* ---- "Keep these settings" ends the notice without changing a setting ---- */
+$GLOBALS['dsk_stub_options'] = array();
+Digitizer_Shabbat_Keeper_Settings::install_defaults();
+$before = get_option( Digitizer_Shabbat_Keeper_Settings::OPTION );
+Digitizer_Shabbat_Keeper_Settings::acknowledge();
+$after = get_option( Digitizer_Shabbat_Keeper_Settings::OPTION );
+dsk_test_eq( Digitizer_Shabbat_Keeper_Admin::setup_notice_html( 'plugins' ), '', 'gone once dismissed' );
+dsk_test_eq( array_diff_assoc( $after, $before ), array( 'saved' => '1' ), 'and only the flag changed' );
+$GLOBALS['dsk_stub_options'] = array();
+Digitizer_Shabbat_Keeper_Settings::acknowledge();
+dsk_test_ok( false === get_option( Digitizer_Shabbat_Keeper_Settings::OPTION ), 'dismissing with no option creates none' );
 
 /* ---- the notice describes closed mode when that is the mode ---- */
 $GLOBALS['dsk_stub_options'] = array();

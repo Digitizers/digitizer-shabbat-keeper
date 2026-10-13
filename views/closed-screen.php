@@ -2,11 +2,11 @@
 /**
  * The page a visitor sees in closed mode. Rendered by
  * Digitizer_Shabbat_Keeper_Enforce::render_closed_screen(), which sets
- * $title, $message, $reopens, $city, $css, $icon, $site, $script and $credit.
+ * $title, $message, $reopens, $city, $icon, $site, $script and $credit.
  *
  * This response is sent and the request ends before wp_head would run, so
- * nothing can be enqueued for it: its one stylesheet is read from the
- * plugin's own assets/closed.css and printed inline.
+ * the renderer enqueues the plugin's one stylesheet itself and this view
+ * prints that handle alone: no theme, no other plugin's assets.
  *
  * @package Digitizer_Shabbat_Keeper
  */
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title><?php echo esc_html( $title ); ?> - <?php echo esc_html( $site ); ?></title>
-<style><?php echo $css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static stylesheet shipped with the plugin. ?></style>
+<?php wp_print_styles( Digitizer_Shabbat_Keeper_Enforce::STYLE_HANDLE ); ?>
 </head>
 <body class="digitizer-sk-page">
 <main class="digitizer-sk-card" role="main">

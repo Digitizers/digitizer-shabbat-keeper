@@ -128,6 +128,19 @@ final class Digitizer_Shabbat_Keeper_Settings {
 		update_option( self::OPTION, $clean );
 	}
 
+	/**
+	 * The site has been told what is in force and keeps it: the flag a save
+	 * sets, with nothing else touched.
+	 */
+	public static function acknowledge() {
+		$opts = get_option( self::OPTION );
+		if ( ! is_array( $opts ) ) {
+			return;
+		}
+		$opts['saved'] = '1';
+		update_option( self::OPTION, $opts );
+	}
+
 	/** @return array{name:string, lat:float, lon:float, candle:int} */
 	public static function location() {
 		$o = self::all();

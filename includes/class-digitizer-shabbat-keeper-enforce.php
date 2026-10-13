@@ -168,19 +168,21 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		$reopens = '1' === Digitizer_Shabbat_Keeper_Settings::get( 'closed_show_times' ) ? self::reopens_sentence() : '';
 		$loc     = Digitizer_Shabbat_Keeper_Settings::location();
 		$city    = $loc['name'];
-		$css     = self::css();
 		$icon    = get_site_icon_url( 128 );
 		$site    = get_bloginfo( 'name' );
 		$script  = self::transition_script();
 		$credit  = '1' === Digitizer_Shabbat_Keeper_Settings::get( 'credit' );
+		// This page ends the request before wp_head, so wp_enqueue_scripts never
+		// fires for it: the stylesheet is enqueued here and the view prints it.
+		self::enqueue_stylesheet();
 		ob_start();
 		include DIGITIZER_SHABBAT_KEEPER_PATH . 'views/closed-screen.php';
 		return (string) ob_get_clean();
 	}
 
-	public static function css() {
-		$css = file_get_contents( DIGITIZER_SHABBAT_KEEPER_PATH . 'assets/closed.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file shipped with the plugin.
-		return is_string( $css ) ? $css : '';
+	/** The one stylesheet: the closed page, the banner and the refusal notices. */
+	public static function enqueue_stylesheet() {
+		wp_enqueue_style( self::STYLE_HANDLE, DIGITIZER_SHABBAT_KEEPER_URL . 'assets/closed.css', array(), DIGITIZER_SHABBAT_KEEPER_VERSION );
 	}
 
 	/* ---------------- times for people ---------------- */
@@ -263,7 +265,7 @@ final class Digitizer_Shabbat_Keeper_Enforce {
 		if ( ! self::is_front_request() || 'business' !== Digitizer_Shabbat_Keeper_Settings::get( 'mode' ) || ! self::applies() ) {
 			return;
 		}
-		wp_enqueue_style( self::STYLE_HANDLE, DIGITIZER_SHABBAT_KEEPER_URL . 'assets/closed.css', array(), DIGITIZER_SHABBAT_KEEPER_VERSION );
+		self::enqueue_stylesheet();
 		if ( '1' === Digitizer_Shabbat_Keeper_Settings::get( 'hide_contact' ) ) {
 			wp_add_inline_style( self::STYLE_HANDLE, self::CONTACT_CSS );
 		}
