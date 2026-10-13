@@ -12,6 +12,7 @@ return array (
     'purchases and forms are refused' => 'רכישות וטפסים נדחים',
     'Shabbat Keeper is active with the times of %1$s: from candle lighting to Havdalah, %2$s.' => 'שומר שבת פעיל לפי הזמנים של %1$s: מהדלקת נרות ועד הבדלה, %2$s.',
     'Choose your city and mode' => 'בחירת עיר ומצב',
+    'Keep these settings' => 'להשאיר את ההגדרות האלה',
     'You are not allowed to do that.' => 'אין לך הרשאה לבצע פעולה זו.',
     'Shabbat' => 'שבת',
     'Rosh Hashana I' => 'ראש השנה א׳',

@@ -9,261 +9,265 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: digitizer-shabbat-keeper\n"
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:29 includes/class-digitizer-shabbat-keeper-admin.php:30 includes/class-digitizer-shabbat-keeper-admin.php:153
+#: includes/class-digitizer-shabbat-keeper-admin.php:31 includes/class-digitizer-shabbat-keeper-admin.php:32 includes/class-digitizer-shabbat-keeper-admin.php:176
 msgid "Shabbat Keeper"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:44
+#: includes/class-digitizer-shabbat-keeper-admin.php:46
 msgid "Settings"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:54
+#: includes/class-digitizer-shabbat-keeper-admin.php:56
 msgid "Settings saved."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:82
+#: includes/class-digitizer-shabbat-keeper-admin.php:86
 msgid "the whole site closes"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:83
+#: includes/class-digitizer-shabbat-keeper-admin.php:87
 msgid "purchases and forms are refused"
 msgstr ""
 
 #. translators: 1: city name, 2: what happens during a closure.
-#: includes/class-digitizer-shabbat-keeper-admin.php:86
+#: includes/class-digitizer-shabbat-keeper-admin.php:90
 msgid "Shabbat Keeper is active with the times of %1$s: from candle lighting to Havdalah, %2$s."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:90
+#: includes/class-digitizer-shabbat-keeper-admin.php:95
 msgid "Choose your city and mode"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:95
+#: includes/class-digitizer-shabbat-keeper-admin.php:96
+msgid "Keep these settings"
+msgstr ""
+
+#: includes/class-digitizer-shabbat-keeper-admin.php:106 includes/class-digitizer-shabbat-keeper-admin.php:118
 msgid "You are not allowed to do that."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:112
+#: includes/class-digitizer-shabbat-keeper-admin.php:135
 msgid "Shabbat"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:113
+#: includes/class-digitizer-shabbat-keeper-admin.php:136
 msgid "Rosh Hashana I"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:114
+#: includes/class-digitizer-shabbat-keeper-admin.php:137
 msgid "Rosh Hashana II"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:115
+#: includes/class-digitizer-shabbat-keeper-admin.php:138
 msgid "Yom Kippur"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:116
+#: includes/class-digitizer-shabbat-keeper-admin.php:139
 msgid "Sukkot"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:117
+#: includes/class-digitizer-shabbat-keeper-admin.php:140
 msgid "Shmini Atzeret"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:118
+#: includes/class-digitizer-shabbat-keeper-admin.php:141
 msgid "Pesach"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:119
+#: includes/class-digitizer-shabbat-keeper-admin.php:142
 msgid "Seventh day of Pesach"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:120
+#: includes/class-digitizer-shabbat-keeper-admin.php:143
 msgid "Shavuot"
 msgstr ""
 
 #. translators: PHP date format for a closure start or end: weekday, day.month, time.
-#: includes/class-digitizer-shabbat-keeper-admin.php:150
+#: includes/class-digitizer-shabbat-keeper-admin.php:173
 msgid "D j.n H:i"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:156
+#: includes/class-digitizer-shabbat-keeper-admin.php:179
 msgid "Status"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:158
+#: includes/class-digitizer-shabbat-keeper-admin.php:181
 msgid "Now: closed"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:158
+#: includes/class-digitizer-shabbat-keeper-admin.php:181
 msgid "Now: open"
 msgstr ""
 
 #. translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted".
-#: includes/class-digitizer-shabbat-keeper-admin.php:161
+#: includes/class-digitizer-shabbat-keeper-admin.php:184
 msgid "Reopens %s"
 msgstr ""
 
 #. translators: %s: weekday, date and time of the next closure.
-#: includes/class-digitizer-shabbat-keeper-admin.php:164
+#: includes/class-digitizer-shabbat-keeper-admin.php:187
 msgid "Next closing: %s"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:168
+#: includes/class-digitizer-shabbat-keeper-admin.php:191
 msgid "Preview the closed site"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:169
+#: includes/class-digitizer-shabbat-keeper-admin.php:192
 msgid "Upcoming closures"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:172
+#: includes/class-digitizer-shabbat-keeper-admin.php:195
 msgid "From"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:173
+#: includes/class-digitizer-shabbat-keeper-admin.php:196
 msgid "Until"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:174
+#: includes/class-digitizer-shabbat-keeper-admin.php:197
 msgid "Reason"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:186
+#: includes/class-digitizer-shabbat-keeper-admin.php:209
 msgid "Nothing leaves the site: the times are computed here from the city you pick."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:194
+#: includes/class-digitizer-shabbat-keeper-admin.php:217
 msgid "Mode"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:195
+#: includes/class-digitizer-shabbat-keeper-admin.php:218
 msgid "Closed - every visitor sees a \"closed for Shabbat\" page"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:196
+#: includes/class-digitizer-shabbat-keeper-admin.php:219
 msgid "Open to read, closed for business - pages stay readable; purchases and forms are refused"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:200
+#: includes/class-digitizer-shabbat-keeper-admin.php:223
 msgid "Location"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:203
+#: includes/class-digitizer-shabbat-keeper-admin.php:226
 msgid "City"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:209 includes/class-digitizer-shabbat-keeper-admin.php:214
+#: includes/class-digitizer-shabbat-keeper-admin.php:232 includes/class-digitizer-shabbat-keeper-admin.php:237
 msgid "Custom"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:216
+#: includes/class-digitizer-shabbat-keeper-admin.php:239
 msgid "Latitude"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:217
+#: includes/class-digitizer-shabbat-keeper-admin.php:240
 msgid "Longitude"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:218
+#: includes/class-digitizer-shabbat-keeper-admin.php:241
 msgid "Candle lighting, minutes before sunset"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:222
+#: includes/class-digitizer-shabbat-keeper-admin.php:245
 msgid "Havdalah"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:224
+#: includes/class-digitizer-shabbat-keeper-admin.php:247
 msgid "42 minutes after sunset"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:225
+#: includes/class-digitizer-shabbat-keeper-admin.php:248
 msgid "72 minutes after sunset (Rabbeinu Tam)"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:232
+#: includes/class-digitizer-shabbat-keeper-admin.php:255
 msgid "Closed page"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:235
+#: includes/class-digitizer-shabbat-keeper-admin.php:258
 msgid "Title"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:239
+#: includes/class-digitizer-shabbat-keeper-admin.php:262
 msgid "Message"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:246
+#: includes/class-digitizer-shabbat-keeper-admin.php:269
 msgid "Show the reopening time"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:250
+#: includes/class-digitizer-shabbat-keeper-admin.php:273
 msgid "Credit"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:252
+#: includes/class-digitizer-shabbat-keeper-admin.php:275
 msgid "Show \"Shabbat Keeper by Digitizer\" under the closed message"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:253
+#: includes/class-digitizer-shabbat-keeper-admin.php:276
 msgid "Off unless you switch it on. It appears on the closed page only."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:260
+#: includes/class-digitizer-shabbat-keeper-admin.php:283
 msgid "Business mode"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:261
+#: includes/class-digitizer-shabbat-keeper-admin.php:284
 msgid "These switches apply to business mode. In closed mode, purchases and forms are always refused."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:263
+#: includes/class-digitizer-shabbat-keeper-admin.php:286
 msgid "Refuse WooCommerce purchases"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:264
+#: includes/class-digitizer-shabbat-keeper-admin.php:287
 msgid "Refuse form submissions (Elementor, Contact Form 7, WPForms, Gravity Forms)"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:265
+#: includes/class-digitizer-shabbat-keeper-admin.php:288
 msgid "Hide phone and WhatsApp links"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:266
+#: includes/class-digitizer-shabbat-keeper-admin.php:289
 msgid "Show a banner at the top of every page"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:268
+#: includes/class-digitizer-shabbat-keeper-admin.php:291
 msgid "Banner text"
 msgstr ""
 
 #. translators: %s is shown to the reader as it is: it is the placeholder they type into the banner text.
-#: includes/class-digitizer-shabbat-keeper-admin.php:272
+#: includes/class-digitizer-shabbat-keeper-admin.php:295
 msgid "%s is replaced by the reopening time."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:279
+#: includes/class-digitizer-shabbat-keeper-admin.php:302
 msgid "Override"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:280
+#: includes/class-digitizer-shabbat-keeper-admin.php:303
 msgid "Automatic (by the calendar)"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:281
+#: includes/class-digitizer-shabbat-keeper-admin.php:304
 msgid "Force open"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:282
+#: includes/class-digitizer-shabbat-keeper-admin.php:305
 msgid "Force closed"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:283
+#: includes/class-digitizer-shabbat-keeper-admin.php:306
 msgid "A forced state ignores the calendar until you switch back to automatic."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-admin.php:286
+#: includes/class-digitizer-shabbat-keeper-admin.php:309
 msgid "Save Settings"
 msgstr ""
 
 #. translators: %s: the name Digitizer, linked to its website.
-#: includes/class-digitizer-shabbat-keeper-admin.php:294
+#: includes/class-digitizer-shabbat-keeper-admin.php:317
 msgid "Shabbat Keeper is built by %s - WordPress sites and maintenance for Israeli businesses."
 msgstr ""
 
@@ -327,26 +331,26 @@ msgstr ""
 msgid "Kfar Saba"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-enforce.php:205
+#: includes/class-digitizer-shabbat-keeper-enforce.php:207
 msgid "when the closure is lifted"
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-enforce.php:209
+#: includes/class-digitizer-shabbat-keeper-enforce.php:211
 msgid "after Havdalah"
 msgstr ""
 
 #. translators: PHP date format for the reopening moment: weekday name and time.
-#: includes/class-digitizer-shabbat-keeper-enforce.php:212
+#: includes/class-digitizer-shabbat-keeper-enforce.php:214
 msgid "l H:i"
 msgstr ""
 
 #. translators: %s: weekday name and time, e.g. "Saturday 19:32".
-#: includes/class-digitizer-shabbat-keeper-enforce.php:214
+#: includes/class-digitizer-shabbat-keeper-enforce.php:216
 msgid "on %s"
 msgstr ""
 
 #. translators: %s: "on Saturday 19:32", "after Havdalah" or "when the closure is lifted".
-#: includes/class-digitizer-shabbat-keeper-enforce.php:219
+#: includes/class-digitizer-shabbat-keeper-enforce.php:221
 msgid "The site reopens %s."
 msgstr ""
 
@@ -363,7 +367,7 @@ msgstr ""
 msgid "The site is closed for Shabbat. Orders and forms reopen %s."
 msgstr ""
 
-#: includes/class-digitizer-shabbat-keeper-settings.php:136
+#: includes/class-digitizer-shabbat-keeper-settings.php:149
 msgid "Custom location"
 msgstr ""
 

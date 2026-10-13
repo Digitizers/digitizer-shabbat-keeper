@@ -308,6 +308,15 @@ $GLOBALS['dsk_stub_inline_styles'] = array();
 function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false ) {
 	$GLOBALS['dsk_stub_styles'][ $handle ] = array( 'src' => $src, 'ver' => $ver );
 }
+// Prints what core would for one enqueued handle: a link to its source.
+function wp_print_styles( $handles = false ) {
+	foreach ( (array) $handles as $handle ) {
+		if ( isset( $GLOBALS['dsk_stub_styles'][ $handle ] ) ) {
+			$s = $GLOBALS['dsk_stub_styles'][ $handle ];
+			echo "<link rel='stylesheet' id='" . $handle . "-css' href='" . $s['src'] . '?ver=' . $s['ver'] . "' media='all' />\n";
+		}
+	}
+}
 function wp_add_inline_style( $handle, $css ) {
 	$GLOBALS['dsk_stub_inline_styles'][ $handle ][] = $css;
 	return true;

@@ -15,10 +15,12 @@ final class Digitizer_Shabbat_Keeper_Admin {
 	const PAGE_SLUG  = 'digitizer-shabbat-keeper';
 	const NONCE      = 'digitizer_sk_settings_nonce';
 	const SAVED_FLAG = 'digitizer_sk_saved';
+	const DISMISS    = 'digitizer_sk_dismiss';
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_post_digitizer_sk_save', array( $this, 'handle_save' ) );
+		add_action( 'admin_post_' . self::DISMISS, array( $this, 'handle_dismiss' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_show_notices' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_show_setup_notice' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( DIGITIZER_SHABBAT_KEEPER_FILE ), array( $this, 'action_links' ) );
@@ -60,7 +62,9 @@ final class Digitizer_Shabbat_Keeper_Admin {
 	 * The plugin enforces from the moment it is activated, with Jerusalem's
 	 * times until someone says otherwise. Until the settings have been saved
 	 * once, the Dashboard and the Plugins screen say which city and mode are
-	 * in force, so a first Shabbat in the wrong city is never a surprise.
+	 * in force, so a first Shabbat in the wrong city is never a surprise. Two
+	 * screens, one line, and it goes for good on a save or on "Keep these
+	 * settings".
 	 */
 	public function maybe_show_setup_notice() {
 		$html = self::setup_notice_html( function_exists( 'get_current_screen' ) && get_current_screen() ? get_current_screen()->id : '' );
@@ -87,7 +91,26 @@ final class Digitizer_Shabbat_Keeper_Admin {
 			$loc['name'],
 			$mode
 		);
-		return '<div class="notice notice-info"><p>' . esc_html( $text ) . ' <a href="' . esc_url( self::settings_url() ) . '">' . esc_html__( 'Choose your city and mode', 'digitizer-shabbat-keeper' ) . '</a></p></div>';
+		return '<div class="notice notice-info"><p>' . esc_html( $text )
+			. ' <a href="' . esc_url( self::settings_url() ) . '">' . esc_html__( 'Choose your city and mode', 'digitizer-shabbat-keeper' ) . '</a>'
+			. ' | <a href="' . esc_url( self::dismiss_url() ) . '">' . esc_html__( 'Keep these settings', 'digitizer-shabbat-keeper' ) . '</a></p></div>';
+	}
+
+	public static function dismiss_url() {
+		return wp_nonce_url( admin_url( 'admin-post.php?action=' . self::DISMISS ), self::DISMISS );
+	}
+
+	/** "Keep these settings": the notice has done its job and does not come back. */
+	public function handle_dismiss() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do that.', 'digitizer-shabbat-keeper' ) );
+		}
+		check_admin_referer( self::DISMISS );
+		Digitizer_Shabbat_Keeper_Settings::acknowledge();
+
+		$back = wp_get_referer();
+		wp_safe_redirect( $back ? $back : admin_url( 'plugins.php' ) );
+		exit;
 	}
 
 	public function handle_save() {
