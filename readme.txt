@@ -106,6 +106,7 @@ Nothing. Deleting the plugin removes its one option and its one scheduled event,
 
 1. The page visitors see in closed mode, with the reopening time.
 2. Business mode: the site stays readable, and a banner says when orders and forms reopen.
+3. The settings screen, in Hebrew: whether the site is closed now, the next closures, the mode, the city and the Havdalah time.
 
 == Changelog ==
 

@@ -6,6 +6,9 @@
 # .wordpress-org/, which is what the assets workflow uploads to SVN.
 # Neither directory ships inside the plugin - see .distignore.
 #
+# screenshot-3.png is not rendered here: it is a capture of the settings
+# screen from a real WordPress site, and this script leaves it alone.
+#
 # Usage:
 #   bin/build-assets.sh
 #
