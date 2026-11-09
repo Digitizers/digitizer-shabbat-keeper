@@ -97,7 +97,10 @@ dsk_test_ok( false === strpos( $html, 'class="digitizer-sk-credit"' ), 'no credi
 sk_set( array( 'credit' => '1' ) );
 sk_anon();
 $html = Digitizer_Shabbat_Keeper_Enforce::render_closed_screen();
-dsk_test_ok( false !== strpos( $html, 'class="digitizer-sk-credit"' ) && false !== strpos( $html, 'href="https://www.digitizer.studio/"' ), 'the credit appears, linked, once switched on' );
+dsk_test_ok( false !== strpos( $html, 'class="digitizer-sk-credit"' ) && false !== strpos( $html, 'href="https://www.digitizer.co.il/"' ), 'the credit appears, linked, once switched on' );
+$dsk_src = '';
+foreach ( array_merge( glob( dirname( __DIR__ ) . '/includes/*.php' ), glob( dirname( __DIR__ ) . '/views/*.php' ) ) as $dsk_file ) { $dsk_src .= (string) file_get_contents( $dsk_file ); }
+dsk_test_ok( false === strpos( $dsk_src, 'digitizer.studio' ), 'every Digitizer link in the plugin points to digitizer.co.il' );
 sk_set( array( 'credit' => '0' ) );
 sk_anon();
 

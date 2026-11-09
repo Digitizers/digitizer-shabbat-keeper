@@ -315,7 +315,7 @@ final class Digitizer_Shabbat_Keeper_Admin {
 					sprintf(
 						/* translators: %s: the name Digitizer, linked to its website. */
 						__( 'Shabbat Keeper is built by %s - WordPress sites and maintenance for Israeli businesses.', 'digitizer-shabbat-keeper' ),
-						'<a href="https://www.digitizer.studio/" target="_blank" rel="noopener">Digitizer</a>'
+						'<a href="https://www.digitizer.co.il/" target="_blank" rel="noopener">Digitizer</a>'
 					),
 					array(
 						'a' => array(

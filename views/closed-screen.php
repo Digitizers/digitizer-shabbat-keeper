@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 				sprintf(
 					/* translators: %s: the name Digitizer, linked to its website. */
 					__( 'Shabbat Keeper by %s', 'digitizer-shabbat-keeper' ),
-					'<a href="https://www.digitizer.studio/" rel="noopener">Digitizer</a>'
+					'<a href="https://www.digitizer.co.il/" rel="noopener">Digitizer</a>'
 				),
 				array(
 					'a' => array(
