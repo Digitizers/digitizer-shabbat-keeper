@@ -4,7 +4,7 @@ Tags: shabbat, jewish holidays, woocommerce, maintenance mode, israel
 Requires at least: 5.7
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,9 @@ Nothing. Deleting the plugin removes its one option and its one scheduled event,
 3. The settings screen, in Hebrew: whether the site is closed now, the next closures, the mode, the city and the Havdalah time.
 
 == Changelog ==
+
+= 1.0.1 =
+* Credits Digitizer in the readme, with a link to the Digitizer Pro Tools page, and lists the Digitizer account as a contributor. The optional credit on the closed screen and the link on the settings screen now go to digitizer.co.il. No functional change.
 
 = 1.0.0 =
 * First release.

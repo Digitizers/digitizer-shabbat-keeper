@@ -3,7 +3,7 @@
  * Plugin Name:       Digitizer Shabbat Keeper
  * Plugin URI:        https://www.digitizer.co.il/digitizer-pro-tools/
  * Description:       Closes your site, or only its shop and forms, from candle lighting to Havdalah every Shabbat and Jewish holiday. Times are computed on your server for the Israeli city you pick - nothing is sent anywhere.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.7
  * Requires PHP:      7.2
  * Author:            Digitizer
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DIGITIZER_SHABBAT_KEEPER_VERSION', '1.0.0' );
+define( 'DIGITIZER_SHABBAT_KEEPER_VERSION', '1.0.1' );
 define( 'DIGITIZER_SHABBAT_KEEPER_FILE', __FILE__ );
 define( 'DIGITIZER_SHABBAT_KEEPER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DIGITIZER_SHABBAT_KEEPER_URL', plugin_dir_url( __FILE__ ) );
