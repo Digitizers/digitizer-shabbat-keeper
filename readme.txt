@@ -1,5 +1,5 @@
 === Digitizer Shabbat Keeper ===
-Contributors: benkalsky
+Contributors: digitizers, benkalsky
 Tags: shabbat, jewish holidays, woocommerce, maintenance mode, israel
 Requires at least: 5.7
 Tested up to: 7.1
