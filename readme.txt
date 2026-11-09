@@ -57,6 +57,8 @@ You can switch the WooCommerce and the form refusals off separately in business 
 * `digitizer_shabbat_keeper_exempt` (filter) - who is never blocked. Administrators by default.
 * `digitizer_shabbat_keeper_refuse` (filter) - whether purchases and forms are refused in the current request. Never in WP-Cron, WP-CLI or wp-admin screens by default, so a shop manager can still build an order by hand.
 
+Built and maintained by [Digitizer](https://www.digitizer.studio/), a WordPress studio.
+
 == Installation ==
 
 1. Install the plugin from the Plugins screen, or upload the ZIP, and activate it.
